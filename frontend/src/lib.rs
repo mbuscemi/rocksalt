@@ -3,25 +3,13 @@
 #[macro_use]
 extern crate stdweb;
 
+mod file;
 mod message;
 
 use yew::{html, Component, ComponentLink, Html, ShouldRender};
 use stdweb::Value;
+use file::File;
 use message::Message;
-
-struct File {
-    contents: String,
-}
-
-impl File {
-    fn new(contents: String) -> Self {
-        File { contents: contents }
-    }
-
-    fn empty() -> Self {
-        File { contents: String::new() }
-    }
-}
 
 pub struct Model {
     link: ComponentLink<Self>,
