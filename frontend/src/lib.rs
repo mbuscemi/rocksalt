@@ -3,8 +3,11 @@
 #[macro_use]
 extern crate stdweb;
 
+mod message;
+
 use yew::{html, Component, ComponentLink, Html, ShouldRender};
 use stdweb::Value;
+use message::Message;
 
 struct File {
     contents: String,
@@ -26,20 +29,12 @@ pub struct Model {
     file: File,
 }
 
-pub enum Msg {
-    OpenFile,
-    SetFile(String),
-    OpenProject,
-    SetProjectPath(String),
-    CloseProject,
-}
-
 impl Component for Model {
-    type Message = Msg;
+    type Message = Message;
     type Properties = ();
 
     fn create(_: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let set_file_callback = link.callback(|content: String| Msg::SetFile(content));
+        let set_file_callback = link.callback(|content: String| Message::SetFile(content));
 
         let js_set_file_callback = move |value: Value| {
             set_file_callback.emit(
@@ -54,7 +49,7 @@ impl Component for Model {
             document.addEventListener("setfile", event => set_file_callback(event.detail.contents));
         };
 
-        let set_project_path_callback = link.callback(|path: String| Msg::SetProjectPath(path));
+        let set_project_path_callback = link.callback(|path: String| Message::SetProjectPath(path));
 
         let js_set_project_path_callback = move |value: Value| {
             set_project_path_callback.emit(
@@ -84,19 +79,19 @@ impl Component for Model {
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
-            Msg::OpenFile => {
+            Message::OpenFile => {
                 js! { external.invoke(JSON.stringify({ msg: "OpenFile" })); }
             },
-            Msg::SetFile(contents) => {
+            Message::SetFile(contents) => {
                 self.file = File::new(contents);
             },
-            Msg::OpenProject => {
+            Message::OpenProject => {
                 js! { external.invoke(JSON.stringify({ msg: "OpenProject" })); }
             },
-            Msg::SetProjectPath(path) => {
+            Message::SetProjectPath(path) => {
                 self.project_path = Some(path);
             },
-            Msg::CloseProject => {
+            Message::CloseProject => {
                 self.project_path = None;
             }
         }
@@ -110,12 +105,12 @@ impl Component for Model {
                     {
                         match self.project_path {
                             None => html! {
-                                <button id="open-project-folder-button" onclick=self.link.callback(|_| Msg::OpenProject)>
+                                <button id="open-project-folder-button" onclick=self.link.callback(|_| Message::OpenProject)>
                                     { "Open Project Folder" }
                                 </button>
                             },
                             _ => html! {
-                                <button id="close-button" onclick=self.link.callback(|_| Msg::CloseProject)>
+                                <button id="close-button" onclick=self.link.callback(|_| Message::CloseProject)>
                                     { "✖" }
                                 </button>
                             },
