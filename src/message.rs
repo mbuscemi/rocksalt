@@ -2,4 +2,5 @@
 #[serde(tag = "msg")]
 pub enum Message {
     OpenFile,
+    OpenProject,
 }

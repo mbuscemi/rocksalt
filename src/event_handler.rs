@@ -10,7 +10,7 @@ pub fn handle(webview: &mut WebView<()>, arg: &str) -> WVResult {
         Ok(message) => {
             match message {
                 Message::OpenFile => {
-                    println!("OpenFileSelector event invoked");
+                    println!("OpenFile event invoked");
 
                     match tfd::open_file_dialog("Open File", "", None) {
                         Some(path) => {
@@ -20,6 +20,18 @@ pub fn handle(webview: &mut WebView<()>, arg: &str) -> WVResult {
                         None => Ok(())
                     }
                 },
+
+                Message::OpenProject => {
+                    println!("OpenProject event invoked");
+
+                    match tfd::select_folder_dialog("Open Project Folder", "") {
+                        Some(path) => {
+                            rpc::set_project_path(webview, path);
+                            Ok(())
+                        },
+                        None => Ok(())
+                    }
+                }
             }
         }
         Err(error) => {

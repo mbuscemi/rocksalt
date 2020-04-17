@@ -1,3 +1,5 @@
+#![recursion_limit="256"]
+
 #[macro_use]
 extern crate stdweb;
 
@@ -20,12 +22,16 @@ impl File {
 
 pub struct Model {
     link: ComponentLink<Self>,
+    project_path: Option<String>,
     file: File,
 }
 
 pub enum Msg {
     OpenFile,
     SetFile(String),
+    OpenProject,
+    SetProjectPath(String),
+    CloseProject,
 }
 
 impl Component for Model {
@@ -48,8 +54,24 @@ impl Component for Model {
             document.addEventListener("setfile", event => set_file_callback(event.detail.contents));
         };
 
+        let set_project_path_callback = link.callback(|path: String| Msg::SetProjectPath(path));
+
+        let js_set_project_path_callback = move |value: Value| {
+            set_project_path_callback.emit(
+                value
+                    .into_string()
+                    .expect("unable to parse payload from setprojectpath")
+            )
+        };
+
+        js! {
+            var set_project_path_callback = @{js_set_project_path_callback};
+            document.addEventListener("setprojectpath", event => set_project_path_callback(event.detail.path));
+        };
+
         Model {
             link: link,
+            project_path: None,
             file: File::empty(),
         }
     }
@@ -67,6 +89,15 @@ impl Component for Model {
             },
             Msg::SetFile(contents) => {
                 self.file = File::new(contents);
+            },
+            Msg::OpenProject => {
+                js! { external.invoke(JSON.stringify({ msg: "OpenProject" })); }
+            },
+            Msg::SetProjectPath(path) => {
+                self.project_path = Some(path);
+            },
+            Msg::CloseProject => {
+                self.project_path = None;
             }
         }
         true
@@ -76,7 +107,20 @@ impl Component for Model {
         html! {
             <div>
                 <header>
-                    <button onclick=self.link.callback(|_| Msg::OpenFile)>{ "Open" }</button>
+                    {
+                        match self.project_path {
+                            None => html! {
+                                <button id="open-project-folder-button" onclick=self.link.callback(|_| Msg::OpenProject)>
+                                    { "Open Project Folder" }
+                                </button>
+                            },
+                            _ => html! {
+                                <button id="close-button" onclick=self.link.callback(|_| Msg::CloseProject)>
+                                    { "✖" }
+                                </button>
+                            },
+                        }
+                    }
                 </header>
                 <section id="main-editor">
                     <div id="editor">{ &self.file.contents }</div>
