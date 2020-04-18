@@ -1,7 +1,9 @@
 extern crate tinyfiledialogs as tfd;
 
 use web_view::{ WebView, WVResult };
+
 use crate::file;
+use crate::file::DiskEntry;
 use crate::message::Message;
 use crate::rpc;
 
@@ -26,7 +28,8 @@ pub fn handle(webview: &mut WebView<()>, arg: &str) -> WVResult {
 
                     match tfd::select_folder_dialog("Open Project Folder", "") {
                         Some(path) => {
-                            rpc::set_project_path(webview, path);
+                            let dir_structure: Vec<DiskEntry> = file::dir_structure(path.clone());
+                            rpc::set_project_path(webview, path, dir_structure);
                             Ok(())
                         },
                         None => Ok(())

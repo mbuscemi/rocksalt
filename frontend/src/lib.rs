@@ -6,6 +6,7 @@ extern crate serde;
 extern crate serde_json;
 extern crate serde_derive;
 
+mod disk_entry;
 mod event;
 mod file;
 mod message;
@@ -13,6 +14,7 @@ pub mod model;
 
 use yew::{html, Component, ComponentLink, Html, ShouldRender};
 
+use disk_entry::DiskEntry;
 use event::{
     Event,
     set_file::SetFile,
@@ -36,6 +38,7 @@ impl Component for Model {
             link: link,
             events: events,
             project_path: None,
+            project_structure: None,
             file: File::empty(),
         }
     }
@@ -57,8 +60,9 @@ impl Component for Model {
             Message::OpenProject => {
                 js! { external.invoke(JSON.stringify({ msg: "OpenProject" })); }
             },
-            Message::SetProjectPath(path) => {
+            Message::SetProjectPath(path, disk_entries) => {
                 self.project_path = Some(path);
+                self.project_structure = Some(disk_entries);
             },
             Message::CloseProject => {
                 self.project_path = None;
@@ -68,6 +72,15 @@ impl Component for Model {
     }
 
     fn view(&self) -> Html {
+        let project_hierarchy = match &self.project_structure {
+            Some(structure) => html! {
+                <ul>
+                    { structure.iter().map(|disk_entry: &DiskEntry| disk_entry.render()).collect::<Html>() }
+                </ul>
+            },
+            None => html! {},
+        };
+
         let (header, project_contents) = match &self.project_path {
             Some(path) => (
                 html! {
@@ -81,12 +94,17 @@ impl Component for Model {
                     </header>
                 },
                 html! {
-                    <h1 class="active">{ "Project" }</h1>
+                    <>
+                        <h1 class="active">{ "Project" }</h1>
+                        {project_hierarchy}
+                    </>
                 }
             ),
             None => (
                 html! {
                     <header>
+                        // TODO: support opening a file through the project explorer
+                        // <button onclick=self.link.callback(|_| Message::OpenFile)>{ "Open File" }</button>
                         <button id="open-project-folder-button" onclick=self.link.callback(|_| Message::OpenProject)>
                             { "Open Project Folder" }
                         </button>
@@ -100,8 +118,6 @@ impl Component for Model {
 
         html! {
             <div id="page">
-                // TODO: support opening a file through the project explorer
-                // <button onclick=self.link.callback(|_| Message::OpenFile)>{ "Open File" }</button>
                 {header}
                 <section id="main-editor">
                     <div id="project-panel">
