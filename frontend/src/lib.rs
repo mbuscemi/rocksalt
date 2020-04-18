@@ -74,16 +74,21 @@ impl Component for Model {
                     // TODO: support opening a file through the project explorer
                     // <button onclick=self.link.callback(|_| Message::OpenFile)>{ "Open File" }</button>
                     {
-                        match self.project_path {
+                        match &self.project_path {
                             None => html! {
                                 <button id="open-project-folder-button" onclick=self.link.callback(|_| Message::OpenProject)>
                                     { "Open Project Folder" }
                                 </button>
                             },
-                            _ => html! {
-                                <button id="close-button" onclick=self.link.callback(|_| Message::CloseProject)>
-                                    { "✖" }
-                                </button>
+                            Some(path) => html! {
+                                <div>
+                                    <span id="project-path">
+                                        <strong>{ "Project Path: " }</strong> {path}
+                                    </span>
+                                    <button id="close-button" onclick=self.link.callback(|_| Message::CloseProject)>
+                                        { "✖" }
+                                    </button>
+                                </div>
                             },
                         }
                     }

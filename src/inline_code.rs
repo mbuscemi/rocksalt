@@ -6,6 +6,7 @@ pub fn html() -> String {
             <meta charset="utf-8" />
             <meta http-equiv="X-UA-Compatible" content="IE=edge" />
             <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=1" name="viewport" />
+            {rocksalt_style}
             <script>
                 var Module = {{}};
                 var __cargo_web = {{}};
@@ -32,12 +33,13 @@ pub fn html() -> String {
 		"#,
         rocksalt_wasm = inline_wasm(include_bytes!("../static/rocksalt-frontend.wasm").to_vec()),
         rocksalt_frontend = inline_script(include_str!("../static/rocksalt-frontend.js").to_string()),
+        rocksalt_style = inline_style(include_str!("../static/rocksalt-style.css").to_string()),
     )
 }
 
-// fn inline_style(style: &str) -> String {
-//     format!(r#"<style type="text/css">{}</style>"#, style)
-// }
+fn inline_style(style: String) -> String {
+    format!(r#"<style type="text/css">{}</style>"#, style)
+}
 
 fn inline_wasm(wasm_file: Vec<u8>) -> String {
     format!(r#"var wasmCode = new Uint8Array({:?});"#, wasm_file)
