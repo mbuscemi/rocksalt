@@ -3,54 +3,32 @@
 #[macro_use]
 extern crate stdweb;
 
+mod event;
 mod file;
 mod message;
+pub mod model;
 
 use yew::{html, Component, ComponentLink, Html, ShouldRender};
-use stdweb::Value;
+
+use event::{
+    set_file::SetFileEvent,
+    set_project_path::SetProjectPathEvent,
+    JsRegistration
+};
 use file::File;
 use message::Message;
-
-pub struct Model {
-    link: ComponentLink<Self>,
-    project_path: Option<String>,
-    file: File,
-}
+use model::Model;
 
 impl Component for Model {
     type Message = Message;
     type Properties = ();
 
     fn create(_: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let set_file_callback = link.callback(|content: String| Message::SetFile(content));
+        let mut set_file_event = SetFileEvent::default();
+        set_file_event.setup(&link);
 
-        let js_set_file_callback = move |value: Value| {
-            set_file_callback.emit(
-                value
-                    .into_string()
-                    .expect("unable to parse payload from setfile")
-            )
-        };
-
-        js! {
-            var set_file_callback = @{js_set_file_callback};
-            document.addEventListener("setfile", event => set_file_callback(event.detail.contents));
-        };
-
-        let set_project_path_callback = link.callback(|path: String| Message::SetProjectPath(path));
-
-        let js_set_project_path_callback = move |value: Value| {
-            set_project_path_callback.emit(
-                value
-                    .into_string()
-                    .expect("unable to parse payload from setprojectpath")
-            )
-        };
-
-        js! {
-            var set_project_path_callback = @{js_set_project_path_callback};
-            document.addEventListener("setprojectpath", event => set_project_path_callback(event.detail.path));
-        };
+        let mut set_project_path_event = SetProjectPathEvent::default();
+        set_project_path_event.setup(&link);
 
         Model {
             link: link,
@@ -60,9 +38,7 @@ impl Component for Model {
     }
 
     fn destroy(&mut self) {
-        js! {
-            set_file_callback.drop();
-        }
+        //TODO: save off events and destroy them
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
@@ -90,6 +66,8 @@ impl Component for Model {
         html! {
             <div>
                 <header>
+                    // TODO: support opening a file through the project explorer
+                    // <button onclick=self.link.callback(|_| Message::OpenFile)>{ "Open File" }</button>
                     {
                         match self.project_path {
                             None => html! {
