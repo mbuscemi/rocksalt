@@ -79,6 +79,11 @@ header {
   /* border: thin dotted blue; */
   text-align: center;
   border-right: 1px solid #0e1e2c;
+  overflow-x: hidden;
+}
+
+#project-panel li {
+  text-align: left;
 }
 
 #editor {

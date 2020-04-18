@@ -1,6 +1,6 @@
 use rocksalt_shared::disk_entry::DiskEntry;
 use std::io::prelude::*;
-use std::fs::{ File, metadata };
+use std::fs::File;
 use ignore::Walk;
 
 pub fn read(path: String) -> String {
@@ -13,12 +13,12 @@ pub fn read(path: String) -> String {
 pub fn dir_structure(path: String) -> Vec<DiskEntry> {
     let mut disk_entries: Vec<DiskEntry> = Vec::new();
 
-    for result in Walk::new(path) {
+    for result in Walk::new(path.clone()) {
         match result {
             Ok(entry) => {
                 let display_value = entry.path().display();
                 disk_entries.push(
-                    DiskEntry::new(display_value.to_string(), is_dir(display_value.to_string()))
+                    DiskEntry::new(display_value.to_string(), path.clone())
                 );
             },
             Err(_) => (),
@@ -26,9 +26,4 @@ pub fn dir_structure(path: String) -> Vec<DiskEntry> {
     }
 
     disk_entries
-}
-
-fn is_dir(file_name:String) -> bool {
-    let md = metadata(file_name.to_string()).unwrap();
-    return md.is_dir();
 }
