@@ -1,4 +1,4 @@
-#![recursion_limit="256"]
+#![recursion_limit="512"]
 
 #[macro_use]
 extern crate stdweb;
@@ -69,32 +69,47 @@ impl Component for Model {
 
     fn view(&self) -> Html {
         html! {
-            <div>
-                <header>
-                    // TODO: support opening a file through the project explorer
-                    // <button onclick=self.link.callback(|_| Message::OpenFile)>{ "Open File" }</button>
-                    {
-                        match &self.project_path {
-                            None => html! {
+            <div id="page">
+
+                // TODO: support opening a file through the project explorer
+                // <button onclick=self.link.callback(|_| Message::OpenFile)>{ "Open File" }</button>
+                {
+                    match &self.project_path {
+                        Some(path) => html! {
+                            <header>
+                                <span id="project-path">
+                                    {path}
+                                </span>
+                                <button id="close-button" onclick=self.link.callback(|_| Message::CloseProject)>
+                                    { "✖" }
+                                </button>
+                            </header>
+                        },
+                        None => html! {
+                            <header>
                                 <button id="open-project-folder-button" onclick=self.link.callback(|_| Message::OpenProject)>
                                     { "Open Project Folder" }
                                 </button>
-                            },
+                            </header>
+                        },
+                    }
+                }
+                <section id="main-editor">
+                    <div id="project-panel">
+                    {
+                        match &self.project_path {
                             Some(path) => html! {
-                                <div>
-                                    <span id="project-path">
-                                        <strong>{ "Project Path: " }</strong> {path}
-                                    </span>
-                                    <button id="close-button" onclick=self.link.callback(|_| Message::CloseProject)>
-                                        { "✖" }
-                                    </button>
-                                </div>
+                                <h1 class="active">{ "Project" }</h1>
+                            },
+                            None => html! {
+                                <h1 class="inactive">{ "Project" }</h1>
                             },
                         }
                     }
-                </header>
-                <section id="main-editor">
-                    <div id="editor">{ &self.file.contents }</div>
+                    </div>
+                    <div id="editor">
+                        { &self.file.contents }
+                    </div>
                 </section>
                 <footer></footer>
             </div>
