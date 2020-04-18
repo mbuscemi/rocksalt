@@ -6,6 +6,7 @@ pub fn html() -> String {
             <meta charset="utf-8" />
             <meta http-equiv="X-UA-Compatible" content="IE=edge" />
             <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=1" name="viewport" />
+            {font_nunito}
             {rocksalt_style}
             <script>
                 var Module = {{}};
@@ -34,6 +35,7 @@ pub fn html() -> String {
         rocksalt_wasm = inline_wasm(include_bytes!("../static/rocksalt-frontend.wasm").to_vec()),
         rocksalt_frontend = inline_script(include_str!("../static/rocksalt-frontend.js").to_string()),
         rocksalt_style = inline_style(include_str!("../static/rocksalt-style.css").to_string()),
+        font_nunito = inline_style(include_str!("../static/font-nunito.css").to_string()),
     )
 }
 

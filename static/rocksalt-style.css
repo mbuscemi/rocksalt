@@ -1,10 +1,12 @@
 body {
   color: white;
   background-color: #050d14;
+  font-family: "Nunito";
 }
 
 button {
   color: white;
+  font-family: "Nunito";
   background-color: #002746;
   padding: 0.5em 1em;
   border: 0;
