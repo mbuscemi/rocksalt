@@ -2,6 +2,9 @@
 
 #[macro_use]
 extern crate stdweb;
+extern crate serde;
+extern crate serde_json;
+extern crate serde_derive;
 
 mod event;
 mod file;
@@ -11,9 +14,9 @@ pub mod model;
 use yew::{html, Component, ComponentLink, Html, ShouldRender};
 
 use event::{
-    set_file::SetFileEvent,
-    set_project_path::SetProjectPathEvent,
-    JsRegistration
+    Event,
+    set_file::SetFile,
+    set_project_path::SetProjectPath,
 };
 use file::File;
 use message::Message;
@@ -24,21 +27,23 @@ impl Component for Model {
     type Properties = ();
 
     fn create(_: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let mut set_file_event = SetFileEvent::default();
-        set_file_event.setup(&link);
-
-        let mut set_project_path_event = SetProjectPathEvent::default();
-        set_project_path_event.setup(&link);
+        let events: [Event; 2] = [
+            Event::new::<SetFile>(&link, String::from("setfile")),
+            Event::new::<SetProjectPath>(&link, String::from("setprojectpath")),
+        ];
 
         Model {
             link: link,
+            events: events,
             project_path: None,
             file: File::empty(),
         }
     }
 
     fn destroy(&mut self) {
-        //TODO: save off events and destroy them
+        for event in self.events.iter() {
+            event.destroy();
+        }
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {

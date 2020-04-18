@@ -1,45 +1,15 @@
-use stdweb::Value;
-use yew::ComponentLink;
+use serde::Deserialize;
 
-use crate::event::JsRegistration;
+use crate::event::Detail;
 use crate::message::Message;
-use crate::model::Model;
 
-pub struct SetFileEvent {
-    callback: Value,
+#[derive(Deserialize, Debug)]
+pub struct SetFile {
+    contents: String,
 }
 
-impl Default for SetFileEvent {
-    fn default() -> Self {
-        Self{ callback: js! {} }
-    }
-}
-
-impl JsRegistration for SetFileEvent {
-    fn setup(&mut self, link: &ComponentLink<Model>) {
-        let callback = link.callback(|content: String| Message::SetFile(content));
-
-        let js_callback = move |value: Value| {
-            callback.emit(
-                value
-                    .into_string()
-                    .expect("unable to parse payload from setfile")
-            )
-        };
-
-        self.callback =
-            js! {
-                var callback = @{js_callback};
-                document.addEventListener("setfile", event => callback(event.detail.contents));
-                return callback;
-            };
-    }
-
-    fn destroy(&self) {
-        let callback = &self.callback;
-        js! {
-            var callback = @{callback};
-            callback.drop();
-        }
+impl Detail<Message> for SetFile {
+    fn transform(&self) -> Message {
+        Message::SetFile(self.contents.clone())
     }
 }
