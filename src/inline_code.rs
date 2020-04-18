@@ -32,8 +32,8 @@ pub fn html() -> String {
         </body>
         </html>
 		"#,
-        rocksalt_wasm = inline_wasm(include_bytes!("../static/rocksalt-frontend.wasm").to_vec()),
-        rocksalt_frontend = inline_script(include_str!("../static/rocksalt-frontend.js").to_string()),
+        rocksalt_wasm = inline_wasm(include_bytes!("../static/rocksalt_frontend.wasm").to_vec()),
+        rocksalt_frontend = inline_script(include_str!("../static/rocksalt_frontend.js").to_string()),
         rocksalt_style = inline_style(include_str!("../static/rocksalt-style.css").to_string()),
         font_nunito = inline_style(include_str!("../static/font-nunito.css").to_string()),
     )
@@ -59,13 +59,13 @@ const YEW_WASM_LOADER: &'static str =
 r#"if( typeof process === "object" && typeof process.versions === "object" && typeof process.versions.node === "string" ) {
             var fs = require( "fs" );
             var path = require( "path" );
-            var wasm_path = path.join( __dirname, "rocksalt-frontend.wasm" );
+            var wasm_path = path.join( __dirname, "rocksalt_frontend.wasm" );
             var buffer = fs.readFileSync( wasm_path );
             var mod = new WebAssembly.Module( buffer );
             var wasm_instance = new WebAssembly.Instance( mod, instance.imports );
             return instance.initialize( wasm_instance );
         } else {
-            var file = fetch( "rocksalt-frontend.wasm", {credentials: "same-origin"} );
+            var file = fetch( "rocksalt_frontend.wasm", {credentials: "same-origin"} );
 
             var wasm_instance = ( typeof WebAssembly.instantiateStreaming === "function"
                 ? WebAssembly.instantiateStreaming( file, instance.imports )

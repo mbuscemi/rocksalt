@@ -1,10 +1,11 @@
 [package]
-name = "rocksalt-frontend"
+name = "rocksalt_frontend"
 version = "0.1.0"
 authors = ["mbuscemi <matthew.buscemi@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+rocksalt_shared = { path = "../shared" }
 yew = { version = "0.14.3", features = ["std_web"] }
 stdweb = "0.4.20"
 serde = "1.0.106"

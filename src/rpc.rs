@@ -1,7 +1,6 @@
+use rocksalt_shared::disk_entry::DiskEntry;
 use rustc_serialize::json::Json;
 use web_view::WebView;
-
-use crate::file::DiskEntry;
 
 pub fn set_file(webview: &mut WebView<()>, contents: String) {
     let cmd = format!(

@@ -6,15 +6,14 @@ extern crate serde;
 extern crate serde_json;
 extern crate serde_derive;
 
-mod disk_entry;
 mod event;
 mod file;
 mod message;
 pub mod model;
 
+use rocksalt_shared::disk_entry::DiskEntry;
 use yew::{html, Component, ComponentLink, Html, ShouldRender};
 
-use disk_entry::DiskEntry;
 use event::{
     Event,
     set_file::SetFile,

@@ -1,15 +1,20 @@
 use serde::Deserialize;
 use yew::{ html, Html };
 
-//TODO: Extract this into a module that can be shared by both the Yew and WebView layers
-
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DiskEntry {
     path: String,
     is_dir: bool,
 }
 
 impl DiskEntry {
+    pub fn new(path: String, is_dir: bool) -> Self {
+        DiskEntry {
+            path: path,
+            is_dir: is_dir,
+        }
+    }
+
     pub fn render(&self) -> Html {
         if self.is_dir {
             html! {

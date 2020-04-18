@@ -1,4 +1,4 @@
-use crate::disk_entry::DiskEntry;
+use rocksalt_shared::disk_entry::DiskEntry;
 
 pub enum Message {
     OpenFile,

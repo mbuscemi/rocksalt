@@ -1,9 +1,9 @@
 extern crate tinyfiledialogs as tfd;
 
 use web_view::{ WebView, WVResult };
+use rocksalt_shared::disk_entry::DiskEntry;
 
 use crate::file;
-use crate::file::DiskEntry;
 use crate::message::Message;
 use crate::rpc;
 

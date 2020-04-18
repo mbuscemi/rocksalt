@@ -1,6 +1,6 @@
+use rocksalt_shared::disk_entry::DiskEntry;
 use yew::ComponentLink;
 
-use crate::disk_entry::DiskEntry;
 use crate::event::Event;
 use crate::file::File;
 
