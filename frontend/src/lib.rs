@@ -68,44 +68,44 @@ impl Component for Model {
     }
 
     fn view(&self) -> Html {
+        let (header, project_contents) = match &self.project_path {
+            Some(path) => (
+                html! {
+                    <header>
+                        <span id="project-path">
+                            {path}
+                        </span>
+                        <button id="close-button" onclick=self.link.callback(|_| Message::CloseProject)>
+                            { "✖" }
+                        </button>
+                    </header>
+                },
+                html! {
+                    <h1 class="active">{ "Project" }</h1>
+                }
+            ),
+            None => (
+                html! {
+                    <header>
+                        <button id="open-project-folder-button" onclick=self.link.callback(|_| Message::OpenProject)>
+                            { "Open Project Folder" }
+                        </button>
+                    </header>
+                },
+                html! {
+                    <h1 class="inactive">{ "Project" }</h1>
+                }
+            ),
+        };
+
         html! {
             <div id="page">
-
                 // TODO: support opening a file through the project explorer
                 // <button onclick=self.link.callback(|_| Message::OpenFile)>{ "Open File" }</button>
-                {
-                    match &self.project_path {
-                        Some(path) => html! {
-                            <header>
-                                <span id="project-path">
-                                    {path}
-                                </span>
-                                <button id="close-button" onclick=self.link.callback(|_| Message::CloseProject)>
-                                    { "✖" }
-                                </button>
-                            </header>
-                        },
-                        None => html! {
-                            <header>
-                                <button id="open-project-folder-button" onclick=self.link.callback(|_| Message::OpenProject)>
-                                    { "Open Project Folder" }
-                                </button>
-                            </header>
-                        },
-                    }
-                }
+                {header}
                 <section id="main-editor">
                     <div id="project-panel">
-                    {
-                        match &self.project_path {
-                            Some(path) => html! {
-                                <h1 class="active">{ "Project" }</h1>
-                            },
-                            None => html! {
-                                <h1 class="inactive">{ "Project" }</h1>
-                            },
-                        }
-                    }
+                        {project_contents}
                     </div>
                     <div id="editor">
                         { &self.file.contents }
