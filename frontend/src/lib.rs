@@ -6,21 +6,19 @@ extern crate serde;
 extern crate serde_json;
 extern crate serde_derive;
 
-mod event;
 mod file;
-mod message;
 pub mod model;
 mod view;
 
-use yew::{html, Component, ComponentLink, Html, ShouldRender};
-
-use event::{
+use rocksalt_shared::event::{
     Event,
     set_file::SetFile,
     set_project_path::SetProjectPath,
 };
+use rocksalt_shared::event::message::Message;
+use yew::{html, Component, ComponentLink, Html, ShouldRender};
+
 use file::File;
-use message::Message;
 use model::Model;
 
 impl Component for Model {

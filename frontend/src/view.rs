@@ -1,7 +1,7 @@
 use rocksalt_shared::file_system::disk_entry::DiskEntry;
+use rocksalt_shared::event::message::Message;
 use yew::{html, Html};
 
-use crate::message::Message;
 use crate::model::Model;
 
 impl Model {

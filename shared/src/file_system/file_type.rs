@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{ Serialize, Deserialize };
 use std::fs::metadata;
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]

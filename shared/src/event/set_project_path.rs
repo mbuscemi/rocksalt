@@ -1,8 +1,8 @@
-use rocksalt_shared::file_system::disk_entry::DiskEntry;
 use serde::Deserialize;
 
-use crate::event::Detail;
-use crate::message::Message;
+use super::Detail;
+use crate::file_system::disk_entry::DiskEntry;
+use super::message::Message;
 
 #[derive(Deserialize, Debug)]
 pub struct SetProjectPath {

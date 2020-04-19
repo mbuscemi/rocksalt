@@ -1,7 +1,7 @@
 use rocksalt_shared::file_system::disk_entry::DiskEntry;
+use rocksalt_shared::event::Event;
 use yew::ComponentLink;
 
-use crate::event::Event;
 use crate::file::File;
 
 pub struct Model {

@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{ Serialize, Deserialize };
 
 use super::file_type::FileType;
 
