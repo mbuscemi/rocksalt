@@ -2,3 +2,4 @@
 extern crate serde_derive;
 
 pub mod disk_entry;
+pub mod file_type;

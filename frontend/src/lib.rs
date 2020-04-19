@@ -143,7 +143,7 @@ fn render_dir(top_dir: DiskEntry, rest: &mut Vec<DiskEntry>) -> Html {
         = rest.drain(..).partition(|entry| entry.project_path_sans_filename() == top_dir_project_path );
 
     let (mut these_folders, mut these_files): (Vec<DiskEntry>, Vec<DiskEntry>)
-        = this_dir_entries.into_iter().partition(|entry| entry.is_dir );
+        = this_dir_entries.into_iter().partition(|entry| entry.is_dir() );
 
     these_folders.sort_by(|a, b| a.filename.to_lowercase().cmp(&b.filename.to_lowercase()));
     these_files.sort_by(|a, b| a.filename.to_lowercase().cmp(&b.filename.to_lowercase()));
