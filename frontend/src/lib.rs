@@ -67,16 +67,7 @@ impl Component for Model {
                 self.project_path = None;
             },
             Message::ToggleHierarchy(full_path) => {
-                self.project_structure =
-                    self.project_structure.as_ref().map(|structure| {
-                        structure.iter().map(|entry| {
-                            if entry.matches(&full_path) {
-                                entry.toggled()
-                            } else {
-                                entry.clone()
-                            }
-                        }).collect()
-                    });
+                self.toggle_entry_at(&full_path);
             },
         }
         true
