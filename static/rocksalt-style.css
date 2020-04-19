@@ -31,7 +31,7 @@ button:active {
 
 h1 {
   margin: 0;
-  font-size: 14px;
+  font-size: 18px;
 }
 
 h1.inactive {
@@ -61,7 +61,7 @@ header {
 }
 
 #project-path {
-  font-size: 14px;
+  font-size: 15px;
 }
 
 #main-editor {
@@ -83,11 +83,13 @@ header {
 }
 
 #project-panel ul {
-  font-size: 13px;
+  font-size: 14px;
+  cursor: default;
 }
 
 #project-panel li {
   text-align: left;
+  user-select: none;
 }
 
 #project-panel li.dir {
