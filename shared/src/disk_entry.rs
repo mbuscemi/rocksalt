@@ -38,6 +38,10 @@ impl DiskEntry {
         self.path_in_project.replace(&self.filename, "")
     }
 
+    pub fn project_path_with_sep(&self) -> String {
+        format!("{}{}", self.path_in_project, std::path::MAIN_SEPARATOR)
+    }
+
     pub fn is_dir(&self) -> bool {
         self.file_type == FileType::Directory
     }
