@@ -13,7 +13,7 @@ pub trait Detail {
 }
 
 pub struct Event {
-    pub callback: Value,
+    pub yew_js_refs: Value,
 }
 
 impl<'a> Event {
@@ -30,21 +30,25 @@ impl<'a> Event {
             yew_callback.emit(detail)
         };
 
-        let callback =
+        let js_refs =
             js! {
                 var callback = @{js_callback};
-                document.addEventListener(@{D::NAME}, event => callback(event.detail));
-                return callback;
+                var handle = document.addEventListener(@{D::NAME}, event => callback(event.detail));
+                return {
+                    name: @{D::NAME},
+                    callback: callback,
+                    handle: handle
+                };
             };
 
-        Event { callback: callback }
+        Event { yew_js_refs: js_refs }
     }
 
-    pub fn destroy(&self) {
-        let callback = &self.callback;
+    pub fn destroy_for_yew(&self) {
         js! {
-            var callback = @{callback};
-            callback.drop();
+            var refs = @{&self.yew_js_refs};
+            document.removeEventListener(refs.name, refs.handle);
+            refs.callback.drop();
         }
     }
 }

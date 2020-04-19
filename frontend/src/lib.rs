@@ -42,7 +42,7 @@ impl Component for Model {
 
     fn destroy(&mut self) {
         for event in self.events.iter() {
-            event.destroy();
+            event.destroy_for_yew();
         }
     }
 
