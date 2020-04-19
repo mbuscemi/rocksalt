@@ -17,7 +17,7 @@ pub struct Event {
 }
 
 impl<'a> Event {
-    pub fn new<C, D>(link: &'a ComponentLink<C>) -> Self
+    pub fn create_for_yew<C, D>(link: &'a ComponentLink<C>) -> Self
         where C: Component,
               <C as Component>::Message: From<Message>,
               D: 'static + Detail + Deserialize<'a>

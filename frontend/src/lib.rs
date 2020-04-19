@@ -27,8 +27,8 @@ impl Component for Model {
 
     fn create(_: Self::Properties, link: ComponentLink<Self>) -> Self {
         let events: [Event; 2] = [
-            Event::new::<Model, SetFile>(&link),
-            Event::new::<Model, SetProjectPath>(&link),
+            Event::create_for_yew::<Model, SetFile>(&link),
+            Event::create_for_yew::<Model, SetProjectPath>(&link),
         ];
 
         Model {
