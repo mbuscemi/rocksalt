@@ -93,7 +93,7 @@ impl Model {
 
     pub fn render_file(&self, entry: &DiskEntry) -> Html {
         html! {
-            <li class={entry.css_class()}>
+            <li class={entry.css_class()} onclick=self.link.callback(|_| Message::Noop)>
                 <span>{entry.filename.clone()}</span>
             </li>
         }

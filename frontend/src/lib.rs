@@ -69,6 +69,7 @@ impl Component for Model {
             Message::ToggleHierarchy(full_path) => {
                 self.toggle_entry_at(&full_path);
             },
+            Message::Noop => {},
         }
         true
     }

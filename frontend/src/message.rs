@@ -7,4 +7,5 @@ pub enum Message {
     SetProjectPath(String, Vec<DiskEntry>),
     CloseProject,
     ToggleHierarchy(String),
+    Noop,
 }
