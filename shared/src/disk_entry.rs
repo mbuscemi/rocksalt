@@ -12,13 +12,10 @@ pub struct DiskEntry {
 
 impl DiskEntry {
     pub fn new(file_path: String, project_path: String) -> Self {
-        let reversed_filename: String = file_path.chars().rev().take_while(|&c| c != '/').collect();
-        let filename: String = reversed_filename.chars().rev().collect();
-
         DiskEntry {
             full_path: file_path.clone(),
-            filename: filename,
-            path_in_project: file_path.clone().replace(&project_path, ""),
+            filename: filename(&file_path),
+            path_in_project: path_in_project(&file_path, &project_path),
             is_dir: is_dir(file_path),
         }
     }
@@ -36,7 +33,16 @@ impl DiskEntry {
     }
 }
 
-fn is_dir(file_name:String) -> bool {
-    let md = metadata(file_name.to_string()).unwrap();
+fn filename(file_path: &String) -> String {
+    let reversed_filename: String = file_path.chars().rev().take_while(|&c| c != std::path::MAIN_SEPARATOR).collect();
+    reversed_filename.chars().rev().collect()
+}
+
+fn path_in_project(file_path: &String, project_path: &String) -> String {
+    file_path.replace(project_path, "")
+}
+
+fn is_dir(file_path: String) -> bool {
+    let md = metadata(file_path.to_string()).unwrap();
     return md.is_dir();
 }
