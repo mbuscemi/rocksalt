@@ -33,11 +33,12 @@ impl<'a> Event {
         let js_refs =
             js! {
                 var callback = @{js_callback};
-                var handle = document.addEventListener(@{D::NAME}, event => callback(event.detail));
+                var listener = event => callback(event.detail);
+                document.addEventListener(@{D::NAME}, listener);
                 return {
                     name: @{D::NAME},
                     callback: callback,
-                    handle: handle
+                    listener: listener
                 };
             };
 
@@ -47,7 +48,7 @@ impl<'a> Event {
     pub fn destroy_for_yew(&self) {
         js! {
             var refs = @{&self.yew_js_refs};
-            document.removeEventListener(refs.name, refs.handle);
+            document.removeEventListener(refs.name, refs.listener);
             refs.callback.drop();
         }
     }
