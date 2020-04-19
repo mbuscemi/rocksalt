@@ -135,11 +135,12 @@ fn project_hierarchy(project_structure: &Option<Vec<DiskEntry>>) -> Html {
     }
 }
 
+//TODO: figure out why deeply nested files aren't displaying
 fn render_dir(top_dir: DiskEntry, rest: &mut Vec<DiskEntry>) -> Html {
-    let top_dir_path = format!("{}{}", top_dir.project_path_sans_filename(), std::path::MAIN_SEPARATOR);
+    let top_dir_project_path = format!("{}{}", top_dir.path_in_project, std::path::MAIN_SEPARATOR);
 
-    let (this_dir_entries, _other_entries): (Vec<DiskEntry>, Vec<DiskEntry>)
-        = rest.drain(..).partition(|entry| entry.project_path_sans_filename() == top_dir_path );
+    let (this_dir_entries, other_entries): (Vec<DiskEntry>, Vec<DiskEntry>)
+        = rest.drain(..).partition(|entry| entry.project_path_sans_filename() == top_dir_project_path );
 
     let (mut these_folders, mut these_files): (Vec<DiskEntry>, Vec<DiskEntry>)
         = this_dir_entries.into_iter().partition(|entry| entry.is_dir );
@@ -151,7 +152,7 @@ fn render_dir(top_dir: DiskEntry, rest: &mut Vec<DiskEntry>) -> Html {
         <li class="dir">
             { top_dir.filename }
             <ul>
-                { these_folders.iter().map(|entry| html! { <li class="dir">{entry.filename.clone()}</li> }).collect::<Html>() }
+                { these_folders.iter().map(|entry| render_dir(entry.clone(), &mut other_entries.clone())).collect::<Html>() }
                 { these_files.iter().map(|entry| html! { <li class="file">{entry.filename.clone()}</li> }).collect::<Html>() }
             </ul>
         </li>

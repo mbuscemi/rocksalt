@@ -13,7 +13,7 @@ fn main() {
     web_view::builder()
         .title("Rocksalt")
         .content(Content::Html(inline_code::html()))
-        .size(1024, 768)
+        .size(2048, 1336)
         .resizable(true)
         .debug(true)
         .user_data(())

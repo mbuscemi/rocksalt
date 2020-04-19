@@ -90,6 +90,7 @@ header {
 }
 
 #project-panel li {
+  margin: 4px 0;
   text-align: left;
 }
 

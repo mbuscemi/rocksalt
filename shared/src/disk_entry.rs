@@ -3,9 +3,9 @@ use std::fs::metadata;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DiskEntry {
-    full_path: String,
+    pub full_path: String,
     pub filename: String,
-    path_in_project: String,
+    pub path_in_project: String,
     pub is_dir: bool,
 }
 
