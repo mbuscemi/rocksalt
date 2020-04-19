@@ -29,6 +29,10 @@ impl DiskEntry {
     pub fn is_dir(&self) -> bool {
         self.file_type == FileType::Directory
     }
+
+    pub fn css_class(&self) -> &str {
+        self.file_type.to_css_class()
+    }
 }
 
 fn filename(file_path: &String) -> String {

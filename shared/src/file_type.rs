@@ -10,6 +10,7 @@ pub enum FileType {
     Css,
     Json,
     Yaml,
+    Image,
     Other,
 }
 
@@ -28,8 +29,20 @@ impl FileType {
                 "css" => Self::Css,
                 "json" => Self::Json,
                 "yml" => Self::Yaml,
+                "jpg" => Self::Image,
+                "png" => Self::Image,
+                "gif" => Self::Image,
                 _ => Self::Other
             }
+        }
+    }
+
+    pub fn to_css_class(&self) -> &str {
+        match self {
+            Self::Directory => "dir",
+            Self::Markdown => "md",
+            Self::Image => "img",
+            _ => "file",
         }
     }
 }

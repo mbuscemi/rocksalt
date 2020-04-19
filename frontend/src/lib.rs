@@ -149,11 +149,11 @@ fn render_dir(top_dir: DiskEntry, rest: &mut Vec<DiskEntry>) -> Html {
     these_files.sort_by(|a, b| a.filename.to_lowercase().cmp(&b.filename.to_lowercase()));
 
     html! {
-        <li class="dir">
+        <li class={top_dir.css_class()}>
             { top_dir.filename }
             <ul>
                 { these_folders.iter().map(|entry| render_dir(entry.clone(), &mut other_entries.clone())).collect::<Html>() }
-                { these_files.iter().map(|entry| html! { <li class="file">{entry.filename.clone()}</li> }).collect::<Html>() }
+                { these_files.iter().map(|entry| html! { <li class={entry.css_class()}>{entry.filename.clone()}</li> }).collect::<Html>() }
             </ul>
         </li>
     }
