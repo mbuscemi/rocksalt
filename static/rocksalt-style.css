@@ -79,19 +79,28 @@ header {
   padding: 6px;
   /* border: thin dotted blue; */
   text-align: center;
-  font-size: 14px;
+  font-size: 15px;
   border-right: 1px solid #0e1e2c;
   overflow-x: scroll;
 }
 
+#project-panel > ul {
+  margin-left: 24px;
+}
+
 #project-panel ul {
   margin-top: 0;
+  padding-left: 12px;
   cursor: default;
 }
 
 #project-panel li {
   margin: 4px 0;
   text-align: left;
+}
+
+#project-panel li span {
+  vertical-align: 0.4em;
 }
 
 #project-panel li > ul {

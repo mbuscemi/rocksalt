@@ -146,7 +146,7 @@ fn project_hierarchy(link: &ComponentLink<Model>, project_structure: &Option<Vec
             let mut mut_structure = structure.clone();
             let top_dir = mut_structure.remove(0);
 
-            render_dir(link, top_dir, &mut mut_structure)
+            html! { <ul>{ render_dir(link, top_dir, &mut mut_structure) }</ul> }
         },
         None => html! {},
     }
@@ -171,7 +171,7 @@ fn render_dir(link: &ComponentLink<Model>, top_dir: DiskEntry, rest: &mut Vec<Di
             <span onclick=link.callback(move |_| Message::ToggleHierarchy(top_dir_clone.full_path.clone()))>{ top_dir.filename }</span>
             <ul>
                 { these_folders.iter().map(|entry| render_dir(link, entry.clone(), &mut other_entries.clone())).collect::<Html>() }
-                { these_files.iter().map(|entry| html! { <li class={entry.css_class()}>{entry.filename.clone()}</li> }).collect::<Html>() }
+                { these_files.iter().map(|entry| html! { <li class={entry.css_class()}><span>{entry.filename.clone()}</span></li> }).collect::<Html>() }
             </ul>
         </li>
     }
