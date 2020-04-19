@@ -1,13 +1,12 @@
 use serde::Deserialize;
 use std::fs::metadata;
-use yew::{ html, Html };
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DiskEntry {
     full_path: String,
-    filename: String,
+    pub filename: String,
     path_in_project: String,
-    is_dir: bool,
+    pub is_dir: bool,
 }
 
 impl DiskEntry {
@@ -20,10 +19,8 @@ impl DiskEntry {
         }
     }
 
-    pub fn render(&self) -> Html {
-        html! {
-            <li class={if self.is_dir { "dir" } else { "file" }}>{self.filename.clone()}</li>
-        }
+    pub fn project_path_sans_filename(&self) -> String {
+        self.path_in_project.replace(&self.filename, "")
     }
 }
 

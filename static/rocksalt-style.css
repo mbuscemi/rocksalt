@@ -62,6 +62,7 @@ header {
 
 #project-path {
   font-size: 15px;
+  cursor: default;
 }
 
 #main-editor {
@@ -78,18 +79,18 @@ header {
   padding: 6px;
   /* border: thin dotted blue; */
   text-align: center;
+  font-size: 14px;
   border-right: 1px solid #0e1e2c;
-  overflow-x: hidden;
+  overflow-x: scroll;
 }
 
 #project-panel ul {
-  font-size: 14px;
+  margin-top: 0;
   cursor: default;
 }
 
 #project-panel li {
   text-align: left;
-  user-select: none;
 }
 
 #project-panel li.dir {

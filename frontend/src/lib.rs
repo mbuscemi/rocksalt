@@ -71,15 +71,6 @@ impl Component for Model {
     }
 
     fn view(&self) -> Html {
-        let project_hierarchy = match &self.project_structure {
-            Some(structure) => html! {
-                <ul>
-                    { structure.iter().map(|disk_entry: &DiskEntry| disk_entry.render()).collect::<Html>() }
-                </ul>
-            },
-            None => html! {},
-        };
-
         let (header, project_contents) = match &self.project_path {
             Some(path) => (
                 html! {
@@ -95,7 +86,7 @@ impl Component for Model {
                 html! {
                     <>
                         <h1 class="active">{ "Project" }</h1>
-                        {project_hierarchy}
+                        {project_hierarchy(&self.project_structure)}
                     </>
                 }
             ),
@@ -129,5 +120,40 @@ impl Component for Model {
                 <footer></footer>
             </div>
         }
+    }
+}
+
+fn project_hierarchy(project_structure: &Option<Vec<DiskEntry>>) -> Html {
+    match project_structure {
+        Some(structure) => {
+            let mut mut_structure = structure.clone();
+            let top_dir = mut_structure.remove(0);
+
+            render_dir(top_dir, &mut mut_structure)
+        },
+        None => html! {},
+    }
+}
+
+fn render_dir(top_dir: DiskEntry, rest: &mut Vec<DiskEntry>) -> Html {
+    let top_dir_path = format!("{}{}", top_dir.project_path_sans_filename(), std::path::MAIN_SEPARATOR);
+
+    let (this_dir_entries, _other_entries): (Vec<DiskEntry>, Vec<DiskEntry>)
+        = rest.drain(..).partition(|entry| entry.project_path_sans_filename() == top_dir_path );
+
+    let (mut these_folders, mut these_files): (Vec<DiskEntry>, Vec<DiskEntry>)
+        = this_dir_entries.into_iter().partition(|entry| entry.is_dir );
+
+    these_folders.sort_by(|a, b| a.filename.to_lowercase().cmp(&b.filename.to_lowercase()));
+    these_files.sort_by(|a, b| a.filename.to_lowercase().cmp(&b.filename.to_lowercase()));
+
+    html! {
+        <li class="dir">
+            { top_dir.filename }
+            <ul>
+                { these_folders.iter().map(|entry| html! { <li class="dir">{entry.filename.clone()}</li> }).collect::<Html>() }
+                { these_files.iter().map(|entry| html! { <li class="file">{entry.filename.clone()}</li> }).collect::<Html>() }
+            </ul>
+        </li>
     }
 }
