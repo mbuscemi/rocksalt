@@ -38,7 +38,7 @@ impl Component for Model {
             events: events,
             project_path: None,
             project_structure: None,
-            file: File::empty(),
+            file: None,
         }
     }
 
@@ -54,7 +54,7 @@ impl Component for Model {
                 js! { external.invoke(JSON.stringify({ msg: "OpenFile" })); }
             },
             Message::SetFile(contents) => {
-                self.file = File::new(contents);
+                self.file = Some(File::new(contents));
             },
             Message::OpenProject => {
                 js! { external.invoke(JSON.stringify({ msg: "OpenProject" })); }
@@ -77,16 +77,14 @@ impl Component for Model {
     fn view(&self) -> Html {
         html! {
             <div id="page">
-                {self.header()}
+                { self.header() }
                 <section id="main-editor">
                     <div id="project-panel">
-                        {self.project_contents()}
+                        { self.project_contents() }
                     </div>
-                    <div id="editor">
-                        { &self.file.contents }
-                    </div>
+                    { self.editor() }
                 </section>
-                <footer></footer>
+                { self.footer() }
             </div>
         }
     }

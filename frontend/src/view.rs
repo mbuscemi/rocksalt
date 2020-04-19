@@ -7,15 +7,17 @@ use crate::model::Model;
 impl Model {
     pub fn header(&self) -> Html {
         match &self.project_path {
-            Some(path) => (
+            Some(_) => (
                 html! {
                     <header>
-                        <span id="project-path">
-                            {path}
-                        </span>
-                        <button id="close-button" onclick=self.link.callback(|_| Message::CloseProject)>
-                            { "✖" }
-                        </button>
+                        <div id="header-left">
+                            { self.save_button() }
+                        </div>
+                        <div id="header-right">
+                            <button id="close-button" onclick=self.link.callback(|_| Message::CloseProject)>
+                                { "✖" }
+                            </button>
+                        </div>
                     </header>
                 }
             ),
@@ -28,6 +30,38 @@ impl Model {
                             { "Open Project Folder" }
                         </button>
                     </header>
+                }
+            ),
+        }
+    }
+
+    pub fn save_button(&self) -> Html {
+        match self.file {
+            Some(_) => html! { <button id="save-button">{ "Save" }</button> },
+            None => html! { <button id="save-button" disabled=true>{ "Save" }</button> },
+        }
+    }
+
+    pub fn footer(&self) -> Html {
+        match &self.project_path {
+            Some(path) => (
+                html! {
+                    <footer>
+                        <div id="footer-left">
+                            <span id="project-path">
+                                {path}
+                            </span>
+                        </div>
+                        <div id="footer-right">
+                            <button id="save-button">{ "Build Project" }</button>
+                        </div>
+                    </footer>
+                }
+            ),
+            None => (
+                html! {
+                    <footer>
+                    </footer>
                 }
             ),
         }
@@ -99,6 +133,20 @@ impl Model {
             <li class={entry.css_class()} onclick=self.link.callback(|_| Message::Noop)>
                 <span>{entry.filename.clone()}</span>
             </li>
+        }
+    }
+
+    pub fn editor(&self) -> Html {
+        let contents: &str =
+            match &self.file {
+                Some(file) => file.contents.as_ref(),
+                None => "",
+            };
+
+        html! {
+            <div id="editor">
+                { contents }
+            </div>
         }
     }
 }

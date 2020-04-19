@@ -9,7 +9,7 @@ pub struct Model {
     pub events: [Event; 2],
     pub project_path: Option<String>,
     pub project_structure: Option<Vec<DiskEntry>>,
-    pub file: File,
+    pub file: Option<File>,
 }
 
 impl Model {
