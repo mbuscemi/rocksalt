@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use crate::file_type::FileType;
+use super::file_type::FileType;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DiskEntry {

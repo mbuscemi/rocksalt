@@ -1,4 +1,4 @@
-use rocksalt_shared::disk_entry::DiskEntry;
+use rocksalt_shared::file_system::disk_entry::DiskEntry;
 use serde::Deserialize;
 
 use crate::event::Detail;

@@ -1,5 +1,4 @@
 #[macro_use]
 extern crate serde_derive;
 
-pub mod disk_entry;
-pub mod file_type;
+pub mod file_system;
