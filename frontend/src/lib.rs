@@ -29,8 +29,8 @@ impl Component for Model {
 
     fn create(_: Self::Properties, link: ComponentLink<Self>) -> Self {
         let events: [Event; 2] = [
-            Event::new::<SetFile>(&link, String::from("setfile")),
-            Event::new::<SetProjectPath>(&link, String::from("setprojectpath")),
+            Event::new::<SetFile>(&link),
+            Event::new::<SetProjectPath>(&link),
         ];
 
         Model {

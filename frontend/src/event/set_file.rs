@@ -9,6 +9,8 @@ pub struct SetFile {
 }
 
 impl Detail<Message> for SetFile {
+    const NAME: &'static str = "setfile";
+
     fn transform(&self) -> Message {
         Message::SetFile(self.contents.clone())
     }

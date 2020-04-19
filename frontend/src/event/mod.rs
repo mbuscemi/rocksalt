@@ -9,6 +9,7 @@ use crate::message::Message;
 use crate::model::Model;
 
 pub trait Detail<Message> {
+    const NAME: &'static str;
     fn transform(&self) -> Message;
 }
 
@@ -17,12 +18,11 @@ pub struct Event {
 }
 
 impl<'a> Event {
-    pub fn new<D: 'static + Detail<Message> + Deserialize<'a>>(link: &'a ComponentLink<Model>, name: String) -> Self {
+    pub fn new<D: 'static + Detail<Message> + Deserialize<'a>>(link: &'a ComponentLink<Model>) -> Self {
         let yew_callback = link.callback(|detail: D| detail.transform() );
 
-        let name_for_js = name.clone();
         let js_callback = move |value: Value| {
-            let structure: Serde<D> = value.try_into().expect(&format!("unable to parse payload from event: {}", name_for_js));
+            let structure: Serde<D> = value.try_into().expect(&format!("unable to parse payload from event: {}", D::NAME));
             let detail: D = structure.0;
             yew_callback.emit(detail)
         };
@@ -30,7 +30,7 @@ impl<'a> Event {
         let callback =
             js! {
                 var callback = @{js_callback};
-                document.addEventListener(@{name}, event => callback(event.detail));
+                document.addEventListener(@{D::NAME}, event => callback(event.detail));
                 return callback;
             };
 
