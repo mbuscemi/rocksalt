@@ -57,33 +57,44 @@ impl Model {
                 let mut mut_structure = structure.clone();
                 let top_dir = mut_structure.remove(0);
 
-                html! { <ul>{ self.render_dir(top_dir, &mut mut_structure) }</ul> }
+                html! { <ul>{ self.render_dir(&top_dir, &mut mut_structure) }</ul> }
             },
             None => html! {},
         }
     }
 
     //TODO: figure out why deeply nested files aren't displaying
-    pub fn render_dir(&self, top_dir: DiskEntry, rest: &mut Vec<DiskEntry>) -> Html {
+    pub fn render_dir(&self, top_dir: &DiskEntry, rest: &mut Vec<DiskEntry>) -> Html {
         let top_dir_clone = top_dir.clone();
         let top_dir_project_path = format!("{}{}", top_dir.path_in_project, std::path::MAIN_SEPARATOR);
 
         let (this_dir_entries, other_entries): (Vec<DiskEntry>, Vec<DiskEntry>)
-            = rest.drain(..).partition(|entry| entry.project_path_sans_filename() == top_dir_project_path );
+            = rest.drain(..).partition(|entry| entry.project_path_sans_filename() == top_dir_project_path);
 
         let (mut these_folders, mut these_files): (Vec<DiskEntry>, Vec<DiskEntry>)
-            = this_dir_entries.into_iter().partition(|entry| entry.is_dir() );
+            = this_dir_entries.into_iter().partition(|entry| entry.is_dir());
 
         these_folders.sort_by(|a, b| a.filename.to_lowercase().cmp(&b.filename.to_lowercase()));
         these_files.sort_by(|a, b| a.filename.to_lowercase().cmp(&b.filename.to_lowercase()));
 
         html! {
-            <li class={ format!("{} {}", top_dir.css_class(), if top_dir.active { "active" } else { "" }) }>
-                <span onclick=self.link.callback(move |_| Message::ToggleHierarchy(top_dir_clone.full_path.clone()))>{ top_dir.filename }</span>
+            <li
+                class={ format!("{} {}", top_dir.css_class(), if top_dir.active { "active" } else { "" }) }
+                onclick=self.link.callback(move |_| Message::ToggleHierarchy(top_dir_clone.full_path.clone()))
+            >
+                <span>{ top_dir.filename.clone() }</span>
                 <ul>
-                    { these_folders.iter().map(|entry| self.render_dir(entry.clone(), &mut other_entries.clone())).collect::<Html>() }
-                    { these_files.iter().map(|entry| html! { <li class={entry.css_class()}><span>{entry.filename.clone()}</span></li> }).collect::<Html>() }
+                    { these_folders.iter().map(|entry| self.render_dir(entry, &mut other_entries.clone())).collect::<Html>() }
+                    { these_files.iter().map(|entry| self.render_file(entry)).collect::<Html>() }
                 </ul>
+            </li>
+        }
+    }
+
+    pub fn render_file(&self, entry: &DiskEntry) -> Html {
+        html! {
+            <li class={entry.css_class()}>
+                <span>{entry.filename.clone()}</span>
             </li>
         }
     }
