@@ -3,10 +3,9 @@ pub mod set_project_path;
 
 use serde::de::Deserialize;
 use stdweb::{ serde::Serde, unstable::TryInto, Value };
-use yew::ComponentLink;
+use yew::{ Component, ComponentLink };
 
 use crate::message::Message;
-use crate::model::Model;
 
 pub trait Detail {
     const NAME: &'static str;
@@ -18,7 +17,11 @@ pub struct Event {
 }
 
 impl<'a> Event {
-    pub fn new<D: 'static + Detail + Deserialize<'a>>(link: &'a ComponentLink<Model>) -> Self {
+    pub fn new<C, D>(link: &'a ComponentLink<C>) -> Self
+        where C: Component,
+              <C as Component>::Message: From<Message>,
+              D: 'static + Detail + Deserialize<'a>
+    {
         let yew_callback = link.callback(|detail: D| detail.transform() );
 
         let js_callback = move |value: Value| {
