@@ -10,7 +10,7 @@ pub struct SetProjectPath {
     dir_structure: Vec<DiskEntry>,
 }
 
-impl Detail<Message> for SetProjectPath {
+impl Detail for SetProjectPath {
     const NAME: &'static str = "setprojectpath";
 
     fn transform(&self) -> Message {

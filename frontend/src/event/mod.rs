@@ -8,7 +8,7 @@ use yew::ComponentLink;
 use crate::message::Message;
 use crate::model::Model;
 
-pub trait Detail<Message> {
+pub trait Detail {
     const NAME: &'static str;
     fn transform(&self) -> Message;
 }
@@ -18,7 +18,7 @@ pub struct Event {
 }
 
 impl<'a> Event {
-    pub fn new<D: 'static + Detail<Message> + Deserialize<'a>>(link: &'a ComponentLink<Model>) -> Self {
+    pub fn new<D: 'static + Detail + Deserialize<'a>>(link: &'a ComponentLink<Model>) -> Self {
         let yew_callback = link.callback(|detail: D| detail.transform() );
 
         let js_callback = move |value: Value| {
