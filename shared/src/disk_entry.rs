@@ -46,8 +46,11 @@ impl DiskEntry {
         &self.full_path == full_path
     }
 
-    pub fn css_class(&self) -> &str {
-        self.file_type.to_css_class()
+    pub fn css_class(&self) -> String {
+        format!("{} {}",
+            self.file_type.to_css_class(),
+            if self.active { "active" } else { "" }
+        )
     }
 }
 

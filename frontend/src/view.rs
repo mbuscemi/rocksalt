@@ -79,7 +79,7 @@ impl Model {
 
         html! {
             <li
-                class={ format!("{} {}", top_dir.css_class(), if top_dir.active { "active" } else { "" }) }
+                class={top_dir.css_class()}
                 onclick=self.link.callback(move |_| Message::ToggleHierarchy(top_dir_clone.full_path.clone()))
             >
                 <span>{ top_dir.filename.clone() }</span>
