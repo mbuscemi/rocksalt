@@ -65,7 +65,24 @@ impl Component for Model {
             },
             Message::CloseProject => {
                 self.project_path = None;
-            }
+            },
+            Message::ToggleHierarchy(full_path) => {
+                self.project_structure =
+                    match &self.project_structure {
+                        Some(structure) => {
+                            Some(
+                                structure.iter().map(|entry| {
+                                    if entry.matches(&full_path) {
+                                        entry.toggled()
+                                    } else {
+                                        entry.clone()
+                                    }
+                                }).collect()
+                            )
+                        },
+                        None => None,
+                    };
+            },
         }
         true
     }
@@ -86,7 +103,7 @@ impl Component for Model {
                 html! {
                     <>
                         <h1 class="active">{ "Project" }</h1>
-                        {project_hierarchy(&self.project_structure)}
+                        {project_hierarchy(&self.link, &self.project_structure)}
                     </>
                 }
             ),
@@ -123,20 +140,21 @@ impl Component for Model {
     }
 }
 
-fn project_hierarchy(project_structure: &Option<Vec<DiskEntry>>) -> Html {
+fn project_hierarchy(link: &ComponentLink<Model>, project_structure: &Option<Vec<DiskEntry>>) -> Html {
     match project_structure {
         Some(structure) => {
             let mut mut_structure = structure.clone();
             let top_dir = mut_structure.remove(0);
 
-            render_dir(top_dir, &mut mut_structure)
+            render_dir(link, top_dir, &mut mut_structure)
         },
         None => html! {},
     }
 }
 
 //TODO: figure out why deeply nested files aren't displaying
-fn render_dir(top_dir: DiskEntry, rest: &mut Vec<DiskEntry>) -> Html {
+fn render_dir(link: &ComponentLink<Model>, top_dir: DiskEntry, rest: &mut Vec<DiskEntry>) -> Html {
+    let top_dir_clone = top_dir.clone();
     let top_dir_project_path = format!("{}{}", top_dir.path_in_project, std::path::MAIN_SEPARATOR);
 
     let (this_dir_entries, other_entries): (Vec<DiskEntry>, Vec<DiskEntry>)
@@ -149,10 +167,10 @@ fn render_dir(top_dir: DiskEntry, rest: &mut Vec<DiskEntry>) -> Html {
     these_files.sort_by(|a, b| a.filename.to_lowercase().cmp(&b.filename.to_lowercase()));
 
     html! {
-        <li class={top_dir.css_class()}>
-            { top_dir.filename }
+        <li class={ format!("{} {}", top_dir.css_class(), if top_dir.active { "active" } else { "" }) }>
+            <span onclick=link.callback(move |_| Message::ToggleHierarchy(top_dir_clone.full_path.clone()))>{ top_dir.filename }</span>
             <ul>
-                { these_folders.iter().map(|entry| render_dir(entry.clone(), &mut other_entries.clone())).collect::<Html>() }
+                { these_folders.iter().map(|entry| render_dir(link, entry.clone(), &mut other_entries.clone())).collect::<Html>() }
                 { these_files.iter().map(|entry| html! { <li class={entry.css_class()}>{entry.filename.clone()}</li> }).collect::<Html>() }
             </ul>
         </li>

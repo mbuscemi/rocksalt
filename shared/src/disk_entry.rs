@@ -4,10 +4,11 @@ use crate::file_type::FileType;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DiskEntry {
-    full_path: String,
+    pub full_path: String,
     pub filename: String,
     file_type: FileType,
     pub path_in_project: String,
+    pub active: bool,
 }
 
 impl DiskEntry {
@@ -19,6 +20,17 @@ impl DiskEntry {
             filename: filename.clone(),
             file_type: FileType::from(&file_path, &filename),
             path_in_project: path_in_project(&file_path, &project_path),
+            active: initial_active(&file_path, &project_path),
+        }
+    }
+
+    pub fn toggled(&self) -> Self {
+        DiskEntry {
+            full_path: self.full_path.clone(),
+            filename: self.filename.clone(),
+            file_type: self.file_type.clone(),
+            path_in_project: self.path_in_project.clone(),
+            active: !self.active,
         }
     }
 
@@ -30,9 +42,17 @@ impl DiskEntry {
         self.file_type == FileType::Directory
     }
 
+    pub fn matches(&self, full_path: &String) -> bool {
+        &self.full_path == full_path
+    }
+
     pub fn css_class(&self) -> &str {
         self.file_type.to_css_class()
     }
+}
+
+fn initial_active(full_path: &String, project_path: &String) -> bool {
+    full_path == project_path
 }
 
 fn filename(file_path: &String) -> String {
