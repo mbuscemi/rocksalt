@@ -21,15 +21,11 @@ impl DiskEntry {
     }
 
     pub fn render(&self) -> Html {
-        if self.is_dir {
+
             html! {
-                <li class="dir">{self.filename.clone()}</li>
+                <li class=if self.is_dir { "dir" } else { "file" }>{self.filename.clone()}</li>
             }
-        } else {
-            html! {
-                <li class="file">{self.filename.clone()}</li>
-            }
-        }
+
     }
 }
 
