@@ -7,3 +7,4 @@ extern crate serde_derive;
 pub mod event;
 pub mod file_system;
 pub mod message;
+pub mod utils;
