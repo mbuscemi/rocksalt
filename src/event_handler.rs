@@ -1,6 +1,10 @@
 extern crate tinyfiledialogs as tfd;
 
 use web_view::{ WebView, WVResult };
+use rocksalt_shared::event::{
+    set_file::SetFile,
+    set_project_path::SetProjectPath
+};
 use rocksalt_shared::file_system::disk_entry::DiskEntry;
 
 use crate::file;
@@ -12,11 +16,9 @@ pub fn handle(webview: &mut WebView<()>, arg: &str) -> WVResult {
         Ok(message) => {
             match message {
                 Message::OpenFile => {
-                    println!("OpenFile event invoked");
-
                     match tfd::open_file_dialog("Open File", "", None) {
                         Some(path) => {
-                            rpc::set_file(webview, file::read(path));
+                            rpc::dispatch(webview, SetFile{ contents: file::read(&path) });
                             Ok(())
                         },
                         None => Ok(())
@@ -24,12 +26,13 @@ pub fn handle(webview: &mut WebView<()>, arg: &str) -> WVResult {
                 },
 
                 Message::OpenProject => {
-                    println!("OpenProject event invoked");
-
                     match tfd::select_folder_dialog("Open Project Folder", "") {
                         Some(path) => {
-                            let dir_structure: Vec<DiskEntry> = file::dir_structure(path.clone());
-                            rpc::set_project_path(webview, path, dir_structure);
+                            let dir_structure: Vec<DiskEntry> = file::dir_structure(&path);
+                            rpc::dispatch(webview, SetProjectPath{
+                                path: path,
+                                dir_structure: dir_structure
+                            });
                             Ok(())
                         },
                         None => Ok(())

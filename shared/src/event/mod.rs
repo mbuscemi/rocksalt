@@ -3,7 +3,7 @@ pub mod set_file;
 pub mod set_project_path;
 
 use message::Message;
-use serde::de::Deserialize;
+use serde::{ Serialize, Deserialize };
 use stdweb::{ serde::Serde, unstable::TryInto, Value };
 use yew::{ Component, ComponentLink };
 
@@ -51,5 +51,17 @@ impl<'a> Event {
             document.removeEventListener(refs.name, refs.listener);
             refs.callback.drop();
         }
+    }
+
+    pub fn command_for_webview<D>(detail: D) -> String
+        where D: Detail + Serialize
+    {
+        format!(
+            r#"document.dispatchEvent(
+                new CustomEvent("{}", {{ detail: {} }})
+            );"#,
+            D::NAME,
+            serde_json::to_string(&detail).expect("failed to JSON encode detail object"),
+        )
     }
 }

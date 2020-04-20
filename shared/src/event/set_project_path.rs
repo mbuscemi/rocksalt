@@ -1,13 +1,13 @@
-use serde::Deserialize;
+use serde::{ Serialize, Deserialize };
 
 use super::Detail;
 use crate::file_system::disk_entry::DiskEntry;
 use super::message::Message;
 
-#[derive(Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct SetProjectPath {
-    path: String,
-    dir_structure: Vec<DiskEntry>,
+    pub path: String,
+    pub dir_structure: Vec<DiskEntry>,
 }
 
 impl Detail for SetProjectPath {

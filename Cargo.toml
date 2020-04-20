@@ -6,7 +6,7 @@ edition = "2018"
 
 [dependencies]
 rocksalt_shared = { path = "shared" }
-web-view = { version = "0.6.2" }
+web-view = "0.6.2"
 ignore = "0.4.14"
 serde = "1.0.106"
 serde_json = "1.0.51"
