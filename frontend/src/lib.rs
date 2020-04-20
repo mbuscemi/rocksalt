@@ -15,7 +15,7 @@ use rocksalt_shared::event::{
     set_file::SetFile,
     set_project_path::SetProjectPath,
 };
-use rocksalt_shared::event::message::Message;
+use rocksalt_shared::message::Message;
 use yew::{html, Component, ComponentLink, Html, ShouldRender};
 
 use file::File;

@@ -1,5 +1,5 @@
 use rocksalt_shared::file_system::disk_entry::DiskEntry;
-use rocksalt_shared::event::message::Message;
+use rocksalt_shared::message::Message;
 use yew::{html, Html};
 
 use crate::model::Model;

@@ -1,8 +1,7 @@
-pub mod message;
 pub mod set_file;
 pub mod set_project_path;
 
-use message::Message;
+use crate::message::Message;
 use serde::{ Serialize, Deserialize };
 use stdweb::{ serde::Serde, unstable::TryInto, Value };
 use yew::{ Component, ComponentLink };

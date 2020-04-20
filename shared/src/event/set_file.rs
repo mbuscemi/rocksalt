@@ -1,7 +1,7 @@
 use serde::{ Serialize, Deserialize };
 
 use super::Detail;
-use super::message::Message;
+use crate::message::Message;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct SetFile {
