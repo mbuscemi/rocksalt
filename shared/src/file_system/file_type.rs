@@ -45,6 +45,13 @@ impl FileType {
             _ => "file",
         }
     }
+
+    pub fn opennable_for_edit(&self) -> bool {
+        match self {
+            Self::Markdown => true,
+            _ => false,
+        }
+    }
 }
 
 fn is_dir(file_path: &String) -> bool {

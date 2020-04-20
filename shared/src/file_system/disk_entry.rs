@@ -51,9 +51,10 @@ impl DiskEntry {
     }
 
     pub fn css_class(&self) -> String {
-        format!("{} {}",
+        format!("{} {} {}",
             self.file_type.to_css_class(),
-            if self.active { "active" } else { "" }
+            if self.active { "active" } else { "" },
+            if self.file_type.opennable_for_edit() { "opennable" } else { "no-edit" }
         )
     }
 }
