@@ -21,6 +21,7 @@ button {
   border-radius:0.2em;
   box-sizing: border-box;
   box-shadow:inset 0 -0.6em 1em -0.35em rgba(0,0,0,0.17),inset 0 0.6em 2em -0.3em rgba(255,255,255,0.15),inset 0 0 0em 0.05em rgba(255,255,255,0.12);
+  -webkit-user-select: none;
 }
 
 button:active {
@@ -85,6 +86,7 @@ footer {
 #project-path {
   font-size: 15px;
   cursor: default;
+  -webkit-user-select: none;
 }
 
 #main-editor {
@@ -104,6 +106,8 @@ footer {
   font-size: 15px;
   border-right: 1px solid #0e1e2c;
   overflow-x: scroll;
+  cursor: default;
+  -webkit-user-select: none;
 }
 
 #project-panel > ul {
@@ -113,7 +117,6 @@ footer {
 #project-panel ul {
   margin-top: 0;
   padding-left: 12px;
-  cursor: default;
 }
 
 #project-panel li {
