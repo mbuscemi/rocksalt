@@ -6,7 +6,7 @@ use crate::file_system::disk_entry::DiskEntry;
 #[serde(tag = "msg")]
 pub enum WebviewMessage {
     SelectFile,
-    OpenFile,
+    OpenFile { path: String },
     SelectProject,
 }
 

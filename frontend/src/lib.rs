@@ -45,8 +45,8 @@ impl Component for Model {
             YewMessage::SelectFile => {
                 Event::invoke_on_webview(WebviewMessage::SelectFile);
             },
-            YewMessage::OpenFile(_path) => {
-                Event::invoke_on_webview(WebviewMessage::OpenFile);
+            YewMessage::OpenFile(path) => {
+                Event::invoke_on_webview(WebviewMessage::OpenFile{ path });
             },
             YewMessage::SetFile(contents) => {
                 self.file = Some(File::new(contents));
@@ -60,6 +60,8 @@ impl Component for Model {
             },
             YewMessage::CloseProject => {
                 self.project_path = None;
+                self.project_structure = None;
+                self.file = None;
             },
             YewMessage::ToggleHierarchy(full_path) => {
                 self.toggle_entry_at(&full_path);

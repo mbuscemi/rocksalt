@@ -26,7 +26,10 @@ pub fn handle(webview: &mut WebView<()>, arg: &str) -> WVResult {
                 );
             },
 
-            WebviewMessage::OpenFile => {
+            WebviewMessage::OpenFile { path } => {
+                rpc::dispatch(webview, SetFile {
+                    contents: file::read(&path)
+                });
             }
 
             WebviewMessage::SelectProject => {
