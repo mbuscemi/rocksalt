@@ -1,5 +1,4 @@
 mod event_handler;
-mod file;
 mod inline_code;
 mod rpc;
 
