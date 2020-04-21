@@ -15,7 +15,8 @@ use crate::rpc;
 pub fn handle(webview: &mut WebView<()>, arg: &str) -> WVResult {
     on_ok(serde_json::from_str(arg), |message| {
         match message {
-            Message::OpenFile => {
+            Message::SelectFile => {
+                println!("SelectFile invoked");
                 on_some(
                     tfd::open_file_dialog("Open File", "", None),
                     |path| {
@@ -26,7 +27,12 @@ pub fn handle(webview: &mut WebView<()>, arg: &str) -> WVResult {
                 );
             },
 
-            Message::OpenProject => {
+            Message::OpenFile => {
+                println!("OpenFile invoked");
+            }
+
+            Message::SelectProject => {
+                println!("SelectProject invoked");
                 on_some(
                     tfd::select_folder_dialog("Open Project Folder", ""),
                     |path| {

@@ -129,10 +129,22 @@ impl Model {
     }
 
     pub fn render_file(&self, entry: &DiskEntry) -> Html {
-        html! {
-            <li class={entry.css_class()} onclick=self.link.callback(|_| Message::Noop)>
-                <span>{entry.filename.clone()}</span>
-            </li>
+        if entry.opennable_for_edit() {
+            let entry_clone = entry.clone();
+            html! {
+                <li class={entry.css_class()}
+                    onclick=self.link.callback(|_| Message::Noop)
+                    ondoubleclick=self.link.callback(move |_| Message::OpenFile(entry_clone.full_path.clone()))
+                >
+                    <span>{entry.filename.clone()}</span>
+                </li>
+            }
+        } else {
+            html! {
+                <li class={entry.css_class()} onclick=self.link.callback(|_| Message::Noop)>
+                    <span>{entry.filename.clone()}</span>
+                </li>
+            }
         }
     }
 

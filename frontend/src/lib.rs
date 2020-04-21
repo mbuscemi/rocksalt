@@ -48,14 +48,17 @@ impl Component for Model {
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
-            Message::OpenFile => {
+            Message::SelectFile => {
+                js! { external.invoke(JSON.stringify({ msg: "SelectFile" })); }
+            },
+            Message::OpenFile(_path) => {
                 js! { external.invoke(JSON.stringify({ msg: "OpenFile" })); }
             },
             Message::SetFile(contents) => {
                 self.file = Some(File::new(contents));
             },
             Message::OpenProject => {
-                js! { external.invoke(JSON.stringify({ msg: "OpenProject" })); }
+                js! { external.invoke(JSON.stringify({ msg: "SelectProject" })); }
             },
             Message::SetProjectPath(path, disk_entries) => {
                 self.project_path = Some(path);

@@ -57,6 +57,10 @@ impl DiskEntry {
             if self.file_type.opennable_for_edit() { "opennable" } else { "no-edit" }
         )
     }
+
+    pub fn opennable_for_edit(&self) -> bool {
+        self.file_type.opennable_for_edit()
+    }
 }
 
 fn initial_active(full_path: &String, project_path: &String) -> bool {
