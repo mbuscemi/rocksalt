@@ -1,11 +1,5 @@
 #![recursion_limit="512"]
 
-#[macro_use]
-extern crate stdweb;
-extern crate serde;
-extern crate serde_json;
-extern crate serde_derive;
-
 mod file;
 pub mod model;
 mod view;
@@ -15,14 +9,14 @@ use rocksalt_shared::event::{
     set_file::SetFile,
     set_project_path::SetProjectPath,
 };
-use rocksalt_shared::message::Message;
+use rocksalt_shared::message::{ WebviewMessage, YewMessage };
 use yew::{html, Component, ComponentLink, Html, ShouldRender};
 
 use file::File;
 use model::Model;
 
 impl Component for Model {
-    type Message = Message;
+    type Message = YewMessage;
     type Properties = ();
 
     fn create(_: Self::Properties, link: ComponentLink<Self>) -> Self {
@@ -48,29 +42,29 @@ impl Component for Model {
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
-            Message::SelectFile => {
-                js! { external.invoke(JSON.stringify({ msg: "SelectFile" })); }
+            YewMessage::SelectFile => {
+                Event::invoke_on_webview(WebviewMessage::SelectFile);
             },
-            Message::OpenFile(_path) => {
-                js! { external.invoke(JSON.stringify({ msg: "OpenFile" })); }
+            YewMessage::OpenFile(_path) => {
+                Event::invoke_on_webview(WebviewMessage::OpenFile);
             },
-            Message::SetFile(contents) => {
+            YewMessage::SetFile(contents) => {
                 self.file = Some(File::new(contents));
             },
-            Message::OpenProject => {
-                js! { external.invoke(JSON.stringify({ msg: "SelectProject" })); }
+            YewMessage::OpenProject => {
+                Event::invoke_on_webview(WebviewMessage::SelectProject);
             },
-            Message::SetProjectPath(path, disk_entries) => {
+            YewMessage::SetProjectPath(path, disk_entries) => {
                 self.project_path = Some(path);
                 self.project_structure = Some(disk_entries);
             },
-            Message::CloseProject => {
+            YewMessage::CloseProject => {
                 self.project_path = None;
             },
-            Message::ToggleHierarchy(full_path) => {
+            YewMessage::ToggleHierarchy(full_path) => {
                 self.toggle_entry_at(&full_path);
             },
-            Message::Noop => {},
+            YewMessage::Noop => {},
         }
         true
     }

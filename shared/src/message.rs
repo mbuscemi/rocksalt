@@ -1,6 +1,16 @@
+use serde::{ Serialize, Deserialize };
+
 use crate::file_system::disk_entry::DiskEntry;
 
-pub enum Message {
+#[derive(Serialize, Deserialize)]
+#[serde(tag = "msg")]
+pub enum WebviewMessage {
+    SelectFile,
+    OpenFile,
+    SelectProject,
+}
+
+pub enum YewMessage {
     SelectFile,
     OpenFile(String),
     SetFile(String),

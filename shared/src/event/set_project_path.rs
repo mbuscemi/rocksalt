@@ -2,7 +2,7 @@ use serde::{ Serialize, Deserialize };
 
 use super::Detail;
 use crate::file_system::disk_entry::DiskEntry;
-use crate::message::Message;
+use crate::message::YewMessage;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct SetProjectPath {
@@ -13,7 +13,7 @@ pub struct SetProjectPath {
 impl Detail for SetProjectPath {
     const NAME: &'static str = "setprojectpath";
 
-    fn transform(&self) -> Message {
-        Message::SetProjectPath(self.path.clone(), self.dir_structure.clone())
+    fn transform(&self) -> YewMessage {
+        YewMessage::SetProjectPath(self.path.clone(), self.dir_structure.clone())
     }
 }

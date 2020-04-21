@@ -1,5 +1,5 @@
 use rocksalt_shared::file_system::disk_entry::DiskEntry;
-use rocksalt_shared::message::Message;
+use rocksalt_shared::message::YewMessage;
 use yew::{html, Html};
 
 use crate::model::Model;
@@ -14,7 +14,7 @@ impl Model {
                             { self.save_button() }
                         </div>
                         <div id="header-right">
-                            <button id="close-button" onclick=self.link.callback(|_| Message::CloseProject)>
+                            <button id="close-button" onclick=self.link.callback(|_| YewMessage::CloseProject)>
                                 { "✖" }
                             </button>
                         </div>
@@ -26,7 +26,7 @@ impl Model {
                     <header>
                         // TODO: support opening a file through the project explorer
                         // <button onclick=self.link.callback(|_| Message::OpenFile)>{ "Open File" }</button>
-                        <button id="open-project-folder-button" onclick=self.link.callback(|_| Message::OpenProject)>
+                        <button id="open-project-folder-button" onclick=self.link.callback(|_| YewMessage::OpenProject)>
                             { "Open Project Folder" }
                         </button>
                     </header>
@@ -117,7 +117,7 @@ impl Model {
         html! {
             <li
                 class={top_dir.css_class()}
-                onclick=self.link.callback(move |_| Message::ToggleHierarchy(top_dir_clone.full_path.clone()))
+                onclick=self.link.callback(move |_| YewMessage::ToggleHierarchy(top_dir_clone.full_path.clone()))
             >
                 <span>{ top_dir.filename.clone() }</span>
                 <ul>
@@ -133,15 +133,15 @@ impl Model {
             let entry_clone = entry.clone();
             html! {
                 <li class={entry.css_class()}
-                    onclick=self.link.callback(|_| Message::Noop)
-                    ondoubleclick=self.link.callback(move |_| Message::OpenFile(entry_clone.full_path.clone()))
+                    onclick=self.link.callback(|_| YewMessage::Noop)
+                    ondoubleclick=self.link.callback(move |_| YewMessage::OpenFile(entry_clone.full_path.clone()))
                 >
                     <span>{entry.filename.clone()}</span>
                 </li>
             }
         } else {
             html! {
-                <li class={entry.css_class()} onclick=self.link.callback(|_| Message::Noop)>
+                <li class={entry.css_class()} onclick=self.link.callback(|_| YewMessage::Noop)>
                     <span>{entry.filename.clone()}</span>
                 </li>
             }

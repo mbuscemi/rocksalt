@@ -1,14 +1,14 @@
 pub mod set_file;
 pub mod set_project_path;
 
-use crate::message::Message;
+use crate::message::{ WebviewMessage, YewMessage };
 use serde::{ Serialize, Deserialize };
 use stdweb::{ serde::Serde, unstable::TryInto, Value };
 use yew::{ Component, ComponentLink };
 
 pub trait Detail {
     const NAME: &'static str;
-    fn transform(&self) -> Message;
+    fn transform(&self) -> YewMessage;
 }
 
 pub struct Event {
@@ -18,7 +18,7 @@ pub struct Event {
 impl<'a> Event {
     pub fn create_for_yew<C, D>(link: &'a ComponentLink<C>) -> Self
         where C: Component,
-              <C as Component>::Message: From<Message>,
+              <C as Component>::Message: From<YewMessage>,
               D: 'static + Detail + Deserialize<'a>
     {
         let yew_callback = link.callback(|detail: D| detail.transform() );
@@ -62,5 +62,10 @@ impl<'a> Event {
             D::NAME,
             serde_json::to_string(&detail).expect("failed to JSON encode detail object"),
         )
+    }
+
+    pub fn invoke_on_webview(message: WebviewMessage) {
+        let json_message = serde_json::to_string(&message).expect("failed to JSON encode WebviewMessage");
+        js! { external.invoke(@{json_message}); }
     }
 }
