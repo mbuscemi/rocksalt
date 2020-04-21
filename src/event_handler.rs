@@ -16,7 +16,6 @@ pub fn handle(webview: &mut WebView<()>, arg: &str) -> WVResult {
     on_ok(serde_json::from_str(arg), |message| {
         match message {
             WebviewMessage::SelectFile => {
-                println!("SelectFile invoked");
                 on_some(
                     tfd::open_file_dialog("Open File", "", None),
                     |path| {
@@ -28,11 +27,9 @@ pub fn handle(webview: &mut WebView<()>, arg: &str) -> WVResult {
             },
 
             WebviewMessage::OpenFile => {
-                println!("OpenFile invoked");
             }
 
             WebviewMessage::SelectProject => {
-                println!("SelectProject invoked");
                 on_some(
                     tfd::select_folder_dialog("Open Project Folder", ""),
                     |path| {
