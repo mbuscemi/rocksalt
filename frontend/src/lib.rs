@@ -45,8 +45,8 @@ impl Component for Model {
             YewMessage::SelectFile => {
                 Event::invoke_on_webview(WebviewMessage::SelectFile);
             },
-            YewMessage::OpenFile(path) => {
-                Event::invoke_on_webview(WebviewMessage::OpenFile{ path });
+            YewMessage::OpenFile{ path, file_type } => {
+                Event::invoke_on_webview(WebviewMessage::OpenFile{ path, file_type });
             },
             YewMessage::SetFile(contents) => {
                 self.file = Some(File::new(contents));

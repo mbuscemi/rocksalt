@@ -7,6 +7,7 @@ use rocksalt_shared::event::{
 };
 use rocksalt_shared::file_system;
 use rocksalt_shared::file_system::disk_entry::DiskEntry;
+use rocksalt_shared::file_system::file::cobalt_markdown::CobaltMarkdown;
 use rocksalt_shared::message::WebviewMessage;
 use rocksalt_shared::utils::{ on_ok, on_some };
 
@@ -26,9 +27,12 @@ pub fn handle(webview: &mut WebView<()>, arg: &str) -> WVResult {
                 );
             },
 
-            WebviewMessage::OpenFile { path } => {
+            WebviewMessage::OpenFile { path, file_type: _ } => {
+                let contents = file_system::read_file(&path);
+                let _file = CobaltMarkdown::parse(&contents);
+
                 rpc::dispatch(webview, SetFile {
-                    contents: file_system::read_file(&path)
+                    contents: contents
                 });
             }
 

@@ -3,6 +3,7 @@ use std::fs::File;
 use ignore::Walk;
 
 pub mod disk_entry;
+pub mod file;
 pub mod file_type;
 
 use disk_entry::DiskEntry;

@@ -24,8 +24,6 @@ impl Model {
             None => (
                 html! {
                     <header>
-                        // TODO: support opening a file through the project explorer
-                        // <button onclick=self.link.callback(|_| Message::OpenFile)>{ "Open File" }</button>
                         <button id="open-project-folder-button" onclick=self.link.callback(|_| YewMessage::OpenProject)>
                             { "Open Project Folder" }
                         </button>
@@ -134,7 +132,7 @@ impl Model {
             html! {
                 <li class={entry.css_class()}
                     onclick=self.link.callback(|_| YewMessage::Noop)
-                    ondoubleclick=self.link.callback(move |_| YewMessage::OpenFile(entry_clone.full_path.clone()))
+                    ondoubleclick=self.link.callback(move |_| YewMessage::OpenFile{ path: entry_clone.full_path.clone(), file_type: entry_clone.file_type.clone() })
                 >
                     <span>{entry.filename.clone()}</span>
                 </li>

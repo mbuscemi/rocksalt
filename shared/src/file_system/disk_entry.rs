@@ -6,7 +6,7 @@ use super::file_type::FileType;
 pub struct DiskEntry {
     pub full_path: String,
     pub filename: String,
-    file_type: FileType,
+    pub file_type: FileType,
     pub path_in_project: String,
     pub active: bool,
 }
