@@ -109,15 +109,15 @@ impl Model {
         let (mut these_folders, mut these_files): (Vec<DiskEntry>, Vec<DiskEntry>)
             = this_dir_entries.into_iter().partition(|entry| entry.is_dir());
 
-        these_folders.sort_by(|a, b| a.filename.to_lowercase().cmp(&b.filename.to_lowercase()));
-        these_files.sort_by(|a, b| a.filename.to_lowercase().cmp(&b.filename.to_lowercase()));
+        these_folders.sort_by(|a, b| a.path.filename.to_lowercase().cmp(&b.path.filename.to_lowercase()));
+        these_files.sort_by(|a, b| a.path.filename.to_lowercase().cmp(&b.path.filename.to_lowercase()));
 
         html! {
             <li
                 class={top_dir.css_class()}
-                onclick=self.link.callback(move |_| YewMessage::ToggleHierarchy(top_dir_clone.full_path.clone()))
+                onclick=self.link.callback(move |_| YewMessage::ToggleHierarchy(top_dir_clone.path.full.clone()))
             >
-                <span>{ top_dir.filename.clone() }</span>
+                <span>{ top_dir.path.filename.clone() }</span>
                 <ul>
                     { these_folders.iter().map(|entry| self.render_dir(entry, &mut other_entries.clone())).collect::<Html>() }
                     { these_files.iter().map(|entry| self.render_file(entry)).collect::<Html>() }
@@ -132,15 +132,15 @@ impl Model {
             html! {
                 <li class={entry.css_class()}
                     onclick=self.link.callback(|_| YewMessage::Noop)
-                    ondoubleclick=self.link.callback(move |_| YewMessage::OpenFile{ path: entry_clone.full_path.clone(), file_type: entry_clone.file_type.clone() })
+                    ondoubleclick=self.link.callback(move |_| YewMessage::OpenFile{ path: entry_clone.path.full.clone(), file_type: entry_clone.path.file_type.clone() })
                 >
-                    <span>{entry.filename.clone()}</span>
+                    <span>{entry.path.filename.clone()}</span>
                 </li>
             }
         } else {
             html! {
                 <li class={entry.css_class()} onclick=self.link.callback(|_| YewMessage::Noop)>
-                    <span>{entry.filename.clone()}</span>
+                    <span>{entry.path.filename.clone()}</span>
                 </li>
             }
         }

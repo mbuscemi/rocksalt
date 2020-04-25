@@ -5,6 +5,7 @@ use ignore::Walk;
 pub mod disk_entry;
 pub mod file;
 pub mod file_type;
+pub mod path;
 
 use disk_entry::DiskEntry;
 
