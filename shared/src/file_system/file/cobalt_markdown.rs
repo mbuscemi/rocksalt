@@ -15,12 +15,14 @@ pub struct CobaltMarkdown {
 }
 
 impl File for CobaltMarkdown {
-
+    fn text(&self) -> String {
+        self.text.clone()
+    }
 }
 
 impl CobaltMarkdown {
-    pub fn parse(contents: &String) -> Self {
-        let sections: Vec<&str> = contents.split("---").collect();
+    pub fn parse(raw: &String) -> Self {
+        let sections: Vec<&str> = raw.split("---").collect();
         let data: &str = sections.get(1).unwrap();
         let chunks: Vec<&str> = data.split("\\n").collect();
         let text: String = clean_text(sections.get(2).unwrap_or(&"").to_string());

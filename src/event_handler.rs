@@ -43,7 +43,7 @@ pub fn handle(webview: &mut WebView<()>, arg: &str) -> WVResult {
                         let dir_structure: Vec<DiskEntry> = file_system::dir_structure(&path);
                         rpc::dispatch(webview, SetProjectPath {
                             path: path,
-                            dir_structure: dir_structure
+                            dir_structure: dir_structure,
                         });
                     }
                 );

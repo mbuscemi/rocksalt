@@ -147,10 +147,10 @@ impl Model {
     }
 
     pub fn editor(&self) -> Html {
-        let contents: &str =
+        let contents: String =
             match &self.file {
-                Some(file) => file.contents.as_ref(),
-                None => "",
+                Some(file) => file.text(),
+                None => "".to_string(),
             };
 
         html! {

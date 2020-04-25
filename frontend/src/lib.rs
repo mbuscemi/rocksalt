@@ -1,6 +1,5 @@
 #![recursion_limit="512"]
 
-mod file;
 pub mod model;
 mod view;
 
@@ -9,10 +8,10 @@ use rocksalt_shared::event::{
     set_file::SetFile,
     set_project_path::SetProjectPath,
 };
+use rocksalt_shared::file_system::file::plain_text::PlainText;
 use rocksalt_shared::message::{ WebviewMessage, YewMessage };
 use yew::{html, Component, ComponentLink, Html, ShouldRender};
 
-use file::File;
 use model::Model;
 
 impl Component for Model {
@@ -49,7 +48,7 @@ impl Component for Model {
                 Event::invoke_on_webview(WebviewMessage::OpenFile{ path, file_type });
             },
             YewMessage::SetFile(contents) => {
-                self.file = Some(File::new(contents));
+                self.file = Some(Box::new(PlainText::parse(&contents)));
             },
             YewMessage::OpenProject => {
                 Event::invoke_on_webview(WebviewMessage::SelectProject);
