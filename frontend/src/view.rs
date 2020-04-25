@@ -154,7 +154,7 @@ impl Model {
                         <div id="editor-toolbar">
                             <div class="file-tab">
                                 <span>{ file.name() }</span>
-                                <button class="close">{ "✖" }</button>
+                                <button class="close" onclick=self.link.callback(|_| YewMessage::UnsetFile)>{ "✖" }</button>
                             </div>
                         </div>
                         <div id="editor-panel">

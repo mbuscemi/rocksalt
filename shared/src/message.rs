@@ -14,6 +14,7 @@ pub enum YewMessage {
     SelectFile,
     OpenFile { path: String, file_type: FileType },
     SetFile(Box<dyn File>),
+    UnsetFile,
     OpenProject,
     SetProjectPath(String, Vec<DiskEntry>),
     CloseProject,

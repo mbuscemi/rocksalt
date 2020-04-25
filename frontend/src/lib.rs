@@ -51,6 +51,9 @@ impl Component for Model {
             YewMessage::SetFile(file) => {
                 self.file = Some(file);
             },
+            YewMessage::UnsetFile => {
+                self.file = None;
+            }
             YewMessage::OpenProject => {
                 Event::invoke_on_webview(WebviewMessage::SelectProject);
             },
