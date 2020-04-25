@@ -21,7 +21,7 @@ pub fn handle(webview: &mut WebView<()>, arg: &str) -> WVResult {
                     tfd::open_file_dialog("Open File", "", None),
                     |path| {
                         rpc::dispatch(webview, SetFile {
-                            file: PlainText::parse(&file_system::read_file(&path)),
+                            file: PlainText::parse(&path, &file_system::read_file(&path)),
                         });
                     }
                 );
@@ -31,12 +31,12 @@ pub fn handle(webview: &mut WebView<()>, arg: &str) -> WVResult {
                 match file_type {
                     FileType::Markdown => {
                         rpc::dispatch(webview, SetFile {
-                            file: CobaltMarkdown::parse(&file_system::read_file(&path))
+                            file: CobaltMarkdown::parse(&path, &file_system::read_file(&path))
                         });
                     },
                     _ => {
                         rpc::dispatch(webview, SetFile {
-                            file: PlainText::parse(&file_system::read_file(&path))
+                            file: PlainText::parse(&path, &file_system::read_file(&path))
                         });
                     },
                 };

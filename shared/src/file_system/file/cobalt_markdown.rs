@@ -1,10 +1,12 @@
 use serde::{ Serialize, Deserialize };
 use std::collections::HashMap;
 
+use crate::file_system::path::Path;
 use crate::file_system::file::{ File, Named };
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct CobaltMarkdown {
+    path: Path,
     title: Option<String>,
     description: Option<String>,
     layout: Option<String>,
@@ -21,7 +23,7 @@ impl Named for CobaltMarkdown {
 
 impl File for CobaltMarkdown {
     fn name(&self) -> String {
-        String::from("")
+        self.path.filename.clone()
     }
 
     fn text(&self) -> String {
@@ -30,7 +32,7 @@ impl File for CobaltMarkdown {
 }
 
 impl CobaltMarkdown {
-    pub fn parse(raw: &String) -> Self {
+    pub fn parse(path: &String, raw: &String) -> Self {
         let sections: Vec<&str> = raw.split("---").collect();
         let data: &str = sections.get(1).unwrap();
         let chunks: Vec<&str> = data.split("\\n").collect();
@@ -53,6 +55,7 @@ impl CobaltMarkdown {
         //Utc.datetime_from_str(props.get("published_date").unwrap_or(&String::from("")), "%Y-%m-%d %H:%M:%S %z").ok()
 
         CobaltMarkdown{
+            path: Path::create(path),
             title: props.get("title").map(|s| s.clone()),
             description: props.get("description").map(|s| s.clone()),
             layout: props.get("layout").map(|s| s.clone()),

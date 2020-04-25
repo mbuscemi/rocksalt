@@ -1,9 +1,11 @@
 use serde::{ Serialize, Deserialize };
 
+use crate::file_system::path::Path;
 use crate::file_system::file::{ File, Named };
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct PlainText {
+    path: Path,
     raw: String
 }
 
@@ -13,7 +15,7 @@ impl Named for PlainText {
 
 impl File for PlainText {
     fn name(&self) -> String {
-        String::from("")
+        self.path.filename.clone()
     }
     
     fn text(&self) -> String {
@@ -22,8 +24,9 @@ impl File for PlainText {
 }
 
 impl PlainText {
-    pub fn parse(raw: &String) -> Self {
+    pub fn parse(path: &String, raw: &String) -> Self {
         PlainText {
+            path: Path::create(path),
             raw: raw.to_string()
         }
     }
