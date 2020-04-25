@@ -169,9 +169,27 @@ footer {
 }
 
 #editor-toolbar {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
   flex: 1;
   max-height: 32px;
   /* border: thin dotted blue; */
+}
+
+#editor-toolbar div.file-tab {
+  margin: 0px 3px;
+  padding: 5px 12px;
+  border: 1px solid #051d59;
+  border-bottom-width: 0px;
+  cursor: default;
+}
+
+#editor-toolbar div.file-tab button.close {
+  margin-left: 10px;
+  margin-right: 0px;
+  padding: 3px;
+  font-size: 11px;
 }
 
 #editor-panel {

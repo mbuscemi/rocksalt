@@ -153,7 +153,8 @@ impl Model {
                     <div id="editor">
                         <div id="editor-toolbar">
                             <div class="file-tab">
-                                { file.name() }
+                                <span>{ file.name() }</span>
+                                <button class="close">{ "✖" }</button>
                             </div>
                         </div>
                         <div id="editor-panel">
