@@ -147,16 +147,31 @@ impl Model {
     }
 
     pub fn editor(&self) -> Html {
-        let contents: String =
-            match &self.file {
-                Some(file) => file.text(),
-                None => "".to_string(),
-            };
-
-        html! {
-            <div id="editor">
-                { contents }
-            </div>
+        match &self.file {
+            Some(file) => {
+                html! {
+                    <div id="editor">
+                        <div id="editor-toolbar">
+                            <div class="file-tab">
+                                { file.name() }
+                            </div>
+                        </div>
+                        <div id="editor-panel">
+                            <div id="editor-main" contenteditable=true>
+                                { file.text() }
+                            </div>
+                        </div>
+                    </div>
+                }
+            },
+            None => {
+                html! {
+                    <div id="editor">
+                        <div id="editor-toolbar"></div>
+                        <div id="editor-panel"></div>
+                    </div>
+                }
+            },
         }
     }
 }

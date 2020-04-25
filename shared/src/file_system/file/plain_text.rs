@@ -12,6 +12,10 @@ impl Named for PlainText {
 }
 
 impl File for PlainText {
+    fn name(&self) -> String {
+        String::from("")
+    }
+    
     fn text(&self) -> String {
         self.raw.clone()
     }

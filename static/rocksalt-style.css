@@ -20,14 +20,14 @@ button {
   border: 0;
   border-radius:0.2em;
   box-sizing: border-box;
-  box-shadow:inset 0 -0.6em 1em -0.35em rgba(0,0,0,0.17),inset 0 0.6em 2em -0.3em rgba(255,255,255,0.15),inset 0 0 0em 0.05em rgba(255,255,255,0.12);
+  box-shadow: inset 0 -0.6em 1em -0.35em rgba(0,0,0,0.17),inset 0 0.6em 2em -0.3em rgba(255,255,255,0.15),inset 0 0 0em 0.05em rgba(255,255,255,0.12);
   -webkit-user-select: none;
 }
 
 button:active {
   color: #8eb7d8;
   background-color: #051d59;
- box-shadow:inset 0 0.6em 2em -0.3em rgba(0,0,0,0.15),inset 0 0 0em 0.05em rgba(255,255,255,0.12);
+  box-shadow: inset 0 0.6em 2em -0.3em rgba(0,0,0,0.15),inset 0 0 0em 0.05em rgba(255,255,255,0.12);
 }
 
 button:disabled,
@@ -80,8 +80,8 @@ footer {
   border-top: 1px solid #0e1e2c;
 }
 
-#close-button {
-}
+/* #close-button {
+} */
 
 #project-path {
   font-size: 15px;
@@ -161,7 +161,20 @@ footer {
 }
 
 #editor {
+  display: flex;
+  flex-direction: column;
   flex: 5;
   padding: 6px;
   /* border: thin dotted red; */
+}
+
+#editor-toolbar {
+  flex: 1;
+  max-height: 32px;
+  /* border: thin dotted blue; */
+}
+
+#editor-panel {
+  flex: 9;
+  /* border: thin dotted green; */
 }

@@ -20,6 +20,10 @@ impl Named for CobaltMarkdown {
 }
 
 impl File for CobaltMarkdown {
+    fn name(&self) -> String {
+        String::from("")
+    }
+
     fn text(&self) -> String {
         self.text.clone()
     }
