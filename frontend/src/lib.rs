@@ -69,6 +69,10 @@ impl Component for Model {
         }
         true
     }
+    
+    fn change(&mut self, _props: Self::Properties) -> bool {
+        false
+    }
 
     fn view(&self) -> Html {
         html! {
