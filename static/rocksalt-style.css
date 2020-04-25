@@ -16,6 +16,12 @@ pre {
   overflow-x: auto;
   white-space: pre-wrap;
   word-wrap: break-word;
+  overflow-y: scroll;
+}
+
+code {
+  font-family: "Taviraj";
+  font-size: 16px;
 }
 
 button {
@@ -199,10 +205,18 @@ footer {
 }
 
 #editor-panel {
+  display: flex;
+  flex-direction: column;
   flex: 9;
   /* border: thin dotted green; */
 }
 
+#editor-pre {
+  padding: 0px 50px;
+  flex: 1;
+}
+
 #editor-main {
   overflow-x: initial;
+  overflow-y: scroll;
 }

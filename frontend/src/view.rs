@@ -158,7 +158,7 @@ impl Model {
                             </div>
                         </div>
                         <div id="editor-panel">
-                            <pre>
+                            <pre id="editor-pre">
                                 <code id="editor-main" class="language-md" contenteditable=true>
                                     { file.text() }
                                 </code>
