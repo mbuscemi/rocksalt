@@ -1,6 +1,6 @@
 use serde::{ Serialize, Deserialize };
 
-use crate::file_system::{ disk_entry::DiskEntry, file_type::FileType };
+use crate::file_system::{ disk_entry::DiskEntry, file::File, file_type::FileType };
 
 #[derive(Serialize, Deserialize)]
 #[serde(tag = "msg")]
@@ -13,7 +13,7 @@ pub enum WebviewMessage {
 pub enum YewMessage {
     SelectFile,
     OpenFile { path: String, file_type: FileType },
-    SetFile(String),
+    SetFile(Box<dyn File>),
     OpenProject,
     SetProjectPath(String, Vec<DiskEntry>),
     CloseProject,

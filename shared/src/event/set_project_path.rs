@@ -11,7 +11,7 @@ pub struct SetProjectPath {
 }
 
 impl Detail for SetProjectPath {
-    const NAME: &'static str = "setprojectpath";
+    fn name() -> String { "setprojectpath".to_string() }
 
     fn transform(&self) -> YewMessage {
         YewMessage::SetProjectPath(self.path.clone(), self.dir_structure.clone())

@@ -1,17 +1,22 @@
-use chrono::{ DateTime, TimeZone, Utc };
-use crate::file_system::file::File;
+use serde::{ Serialize, Deserialize };
 use std::collections::HashMap;
 
-#[derive(Debug)]
+use crate::file_system::file::{ File, Named };
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct CobaltMarkdown {
     title: Option<String>,
     description: Option<String>,
     layout: Option<String>,
     tags: Vec<String>,
     categories: Vec<String>,
-    published_date: Option<DateTime<Utc>>,
+    published_date: Option<String>,
     is_draft: bool,
     text: String,
+}
+
+impl Named for CobaltMarkdown {
+    const NAME: &'static str = "cobaltmarkdown";
 }
 
 impl File for CobaltMarkdown {
@@ -38,13 +43,18 @@ impl CobaltMarkdown {
         let tags: Vec<String> = gather_metadata_list(String::from("tags"), data.to_string());
         let categories: Vec<String> = gather_metadata_list(String::from("categories"), data.to_string());
 
+        //TODO: figure out how to get a proper datetime involve; this one is not serializable by Serde
+        //published_date: Option<DateTime<Utc>>,
+        //use chrono::{ DateTime, TimeZone, Utc };
+        //Utc.datetime_from_str(props.get("published_date").unwrap_or(&String::from("")), "%Y-%m-%d %H:%M:%S %z").ok()
+
         CobaltMarkdown{
             title: props.get("title").map(|s| s.clone()),
             description: props.get("description").map(|s| s.clone()),
             layout: props.get("layout").map(|s| s.clone()),
             tags: tags,
             categories: categories,
-            published_date: Utc.datetime_from_str(props.get("published_date").unwrap_or(&String::from("")), "%Y-%m-%d %H:%M:%S %z").ok(),
+            published_date: props.get("published_date").map(|s| s.clone()),
             is_draft: parse_is_draft(props.get("is_draft")),
             text: text,
         }

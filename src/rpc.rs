@@ -7,5 +7,5 @@ pub fn dispatch<D>(webview: &mut WebView<()>, detail: D)
 {
     webview
         .eval(&Event::command_for_webview(detail))
-        .expect(format!("failed to execute {} command on webview", D::NAME).as_str());
+        .expect(format!("failed to execute {} command on webview", D::name()).as_str());
 }

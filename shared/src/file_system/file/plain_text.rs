@@ -1,8 +1,14 @@
-use crate::file_system::file::File;
+use serde::{ Serialize, Deserialize };
 
-#[derive(Debug)]
+use crate::file_system::file::{ File, Named };
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct PlainText {
     raw: String
+}
+
+impl Named for PlainText {
+    const NAME: &'static str = "plaintext";
 }
 
 impl File for PlainText {

@@ -7,7 +7,7 @@ use stdweb::{ serde::Serde, unstable::TryInto, Value };
 use yew::{ Component, ComponentLink };
 
 pub trait Detail {
-    const NAME: &'static str;
+    fn name() -> String;
     fn transform(&self) -> YewMessage;
 }
 
@@ -24,7 +24,7 @@ impl<'a> Event {
         let yew_callback = link.callback(|detail: D| detail.transform() );
 
         let js_callback = move |value: Value| {
-            let structure: Serde<D> = value.try_into().expect(&format!("unable to parse payload from event: {}", D::NAME));
+            let structure: Serde<D> = value.try_into().expect(&format!("unable to parse payload from event: {}", D::name()));
             let detail: D = structure.0;
             yew_callback.emit(detail)
         };
@@ -33,9 +33,9 @@ impl<'a> Event {
             js! {
                 var callback = @{js_callback};
                 var listener = event => callback(event.detail);
-                document.addEventListener(@{D::NAME}, listener);
+                document.addEventListener(@{D::name()}, listener);
                 return {
-                    name: @{D::NAME},
+                    name: @{D::name()},
                     callback: callback,
                     listener: listener
                 };
@@ -59,7 +59,7 @@ impl<'a> Event {
             r#"document.dispatchEvent(
                 new CustomEvent("{}", {{ detail: {} }})
             );"#,
-            D::NAME,
+            D::name(),
             serde_json::to_string(&detail).expect("failed to JSON encode detail object"),
         )
     }

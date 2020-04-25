@@ -4,7 +4,7 @@ use yew::ComponentLink;
 
 pub struct Model {
     pub link: ComponentLink<Self>,
-    pub events: [Event; 2],
+    pub events: [Event; 3],
     pub project_path: Option<String>,
     pub project_structure: Option<Vec<DiskEntry>>,
     pub file: Option<Box<dyn File>>,

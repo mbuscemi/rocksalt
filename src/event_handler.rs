@@ -6,8 +6,8 @@ use rocksalt_shared::event::{
     set_project_path::SetProjectPath
 };
 use rocksalt_shared::file_system;
-use rocksalt_shared::file_system::disk_entry::DiskEntry;
-use rocksalt_shared::file_system::file::cobalt_markdown::CobaltMarkdown;
+use rocksalt_shared::file_system::{ disk_entry::DiskEntry, file_type::FileType };
+use rocksalt_shared::file_system::file::{ cobalt_markdown::CobaltMarkdown, plain_text::PlainText };
 use rocksalt_shared::message::WebviewMessage;
 use rocksalt_shared::utils::{ on_ok, on_some };
 
@@ -21,19 +21,25 @@ pub fn handle(webview: &mut WebView<()>, arg: &str) -> WVResult {
                     tfd::open_file_dialog("Open File", "", None),
                     |path| {
                         rpc::dispatch(webview, SetFile {
-                            contents: file_system::read_file(&path)
+                            file: PlainText::parse(&file_system::read_file(&path)),
                         });
                     }
                 );
             },
 
-            WebviewMessage::OpenFile { path, file_type: _ } => {
-                let contents = file_system::read_file(&path);
-                let _file = CobaltMarkdown::parse(&contents);
-
-                rpc::dispatch(webview, SetFile {
-                    contents: contents
-                });
+            WebviewMessage::OpenFile { path, file_type } => {
+                match file_type {
+                    FileType::Markdown => {
+                        rpc::dispatch(webview, SetFile {
+                            file: CobaltMarkdown::parse(&file_system::read_file(&path))
+                        });
+                    },
+                    _ => {
+                        rpc::dispatch(webview, SetFile {
+                            file: PlainText::parse(&file_system::read_file(&path))
+                        });
+                    },
+                };
             }
 
             WebviewMessage::SelectProject => {

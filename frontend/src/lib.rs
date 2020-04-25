@@ -8,7 +8,7 @@ use rocksalt_shared::event::{
     set_file::SetFile,
     set_project_path::SetProjectPath,
 };
-use rocksalt_shared::file_system::file::plain_text::PlainText;
+use rocksalt_shared::file_system::file::{ cobalt_markdown::CobaltMarkdown, plain_text::PlainText };
 use rocksalt_shared::message::{ WebviewMessage, YewMessage };
 use yew::{html, Component, ComponentLink, Html, ShouldRender};
 
@@ -19,8 +19,9 @@ impl Component for Model {
     type Properties = ();
 
     fn create(_: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let events: [Event; 2] = [
-            Event::create_for_yew::<Model, SetFile>(&link),
+        let events: [Event; 3] = [
+            Event::create_for_yew::<Model, SetFile<PlainText>>(&link),
+            Event::create_for_yew::<Model, SetFile<CobaltMarkdown>>(&link),
             Event::create_for_yew::<Model, SetProjectPath>(&link),
         ];
 
@@ -47,8 +48,8 @@ impl Component for Model {
             YewMessage::OpenFile{ path, file_type } => {
                 Event::invoke_on_webview(WebviewMessage::OpenFile{ path, file_type });
             },
-            YewMessage::SetFile(contents) => {
-                self.file = Some(Box::new(PlainText::parse(&contents)));
+            YewMessage::SetFile(file) => {
+                self.file = Some(file);
             },
             YewMessage::OpenProject => {
                 Event::invoke_on_webview(WebviewMessage::SelectProject);
