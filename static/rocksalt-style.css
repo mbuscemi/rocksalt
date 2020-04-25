@@ -12,6 +12,12 @@ body {
   /* border: thin dotted purple; */
 }
 
+pre {
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
 button {
   color: white;
   font-family: "Nunito";
@@ -195,4 +201,8 @@ footer {
 #editor-panel {
   flex: 9;
   /* border: thin dotted green; */
+}
+
+#editor-main {
+  overflow-x: initial;
 }
