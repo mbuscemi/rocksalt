@@ -190,11 +190,14 @@ footer {
 }
 
 #editor-toolbar div.file-tab {
+  display: flex;
+  flex-direction: row;
   margin: 0px 3px;
   padding: 5px 12px;
   border: 1px solid #051d59;
   border-bottom-width: 0px;
   cursor: default;
+  /* border: thin dotted white; */
 }
 
 #editor-toolbar div.file-tab button.close {
@@ -202,6 +205,14 @@ footer {
   margin-right: 0px;
   padding: 3px;
   font-size: 11px;
+  /* border: thin dotted blue; */
+}
+
+#editor-toolbar div.file-tab div {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  /* border: thin dotted red; */
 }
 
 #editor-panel {
