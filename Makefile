@@ -6,6 +6,7 @@ process:
 	cd frontend && cargo web build --release
 	cp frontend/target/wasm32-unknown-unknown/release/rocksalt_frontend.js static/
 	cp frontend/target/wasm32-unknown-unknown/release/rocksalt_frontend.wasm static/
+	cd shared && cargo test
 
 build:
 	cargo build
