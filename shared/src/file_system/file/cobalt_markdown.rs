@@ -72,8 +72,14 @@ fn clean_data(str: String) -> String {
     str.replace("\\\"", "").trim().to_string()
 }
 
-fn clean_text(str: String) -> String {
-    str.replace("\\n", "\n").replace("\\t", "\t").replace("\\\"", "\"")
+fn clean_text(text: String) -> String {
+    text
+        .replace("\\n", "\n")
+        .replace("\\t", "\t")
+        .replace("\\\"", "\"")
+        .trim_end_matches('"')
+        .trim()
+        .to_string()
 }
 
 fn parse_is_draft(prop: Option<&String>) -> bool {
@@ -103,4 +109,22 @@ fn gather_metadata_list(name: String, data: String) -> Vec<String> {
     }
 
     tags
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs::canonicalize;
+    use std::path::Path;
+
+    #[test]
+    fn test_basic_md() {
+        let abs_path: String = canonicalize(Path::new("./static/test/basic.md")).unwrap().to_str().unwrap().to_string();
+        let file_contents: String = include_str!("../../../static/test/basic.md").to_string();
+
+        let md = CobaltMarkdown::parse(&abs_path, &file_contents);
+
+        assert_eq!(md.name(), "basic.md");
+        assert_eq!(md.text(), "This is a basic example of a Cobalt markdown file for a static website.");
+    }
 }
