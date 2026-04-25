@@ -1,3 +1,7 @@
+[workspace]
+members = ["shared", "frontend"]
+default-members = ["."]
+
 [package]
 name = "rocksalt"
 version = "0.1.0"

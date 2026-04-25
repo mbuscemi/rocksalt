@@ -1,10 +1,13 @@
 #![recursion_limit="512"]
+#[macro_use]
+extern crate stdweb;
 
 pub mod model;
 mod view;
+mod event;
 
+use crate::event::Event;
 use rocksalt_shared::event::{
-    Event,
     set_file::SetFile,
     set_project_path::SetProjectPath,
 };

@@ -1,5 +1,5 @@
 use rocksalt_shared::file_system::{ disk_entry::DiskEntry, file::File };
-use rocksalt_shared::event::Event;
+use crate::event::Event;
 use yew::ComponentLink;
 
 pub struct Model {
