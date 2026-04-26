@@ -2,6 +2,7 @@ mod event_handler;
 mod inline_code;
 mod rpc;
 
+use rocksalt_shared::message::WebviewMessage;
 use wry::{
     application::{
         event::{Event, WindowEvent},
@@ -13,7 +14,7 @@ use wry::{
 };
 
 fn main() -> wry::Result<()> {
-    let event_loop = EventLoop::<Vec<String>>::with_user_event();
+    let event_loop = EventLoop::<WebviewMessage>::with_user_event();
     let proxy = event_loop.create_proxy();
 
     let window = WindowBuilder::new()
@@ -39,9 +40,8 @@ fn main() -> wry::Result<()> {
         })
         .with_url("rocksalt://localhost/")?
         .with_ipc_handler(move |_window, message| {
-            let commands = event_handler::handle(&message);
-            if !commands.is_empty() {
-                let _ = proxy.send_event(commands);
+            if let Ok(msg) = serde_json::from_str::<WebviewMessage>(&message) {
+                let _ = proxy.send_event(msg);
             }
         })
         .build()
@@ -53,8 +53,8 @@ fn main() -> wry::Result<()> {
             Event::WindowEvent { event: WindowEvent::CloseRequested, .. } => {
                 *control_flow = ControlFlow::Exit;
             }
-            Event::UserEvent(commands) => {
-                for cmd in commands {
+            Event::UserEvent(message) => {
+                for cmd in event_handler::handle(message) {
                     let _ = webview.evaluate_script(&cmd);
                 }
             }

@@ -32,7 +32,7 @@ impl DiskEntry {
     }
 
     pub fn project_path_with_sep(&self) -> String {
-        format!("{}{}", self.project_path, std::path::MAIN_SEPARATOR)
+        format!("{}/", self.project_path)
     }
 
     pub fn is_dir(&self) -> bool {
@@ -57,7 +57,7 @@ impl DiskEntry {
 }
 
 fn path_in_project(file_path: &String, project_path: &String) -> String {
-    file_path.replace(project_path, "")
+    file_path.replace(project_path, "").replace('\\', "/")
 }
 
 fn initial_active(full_path: &String, project_path: &String) -> bool {
