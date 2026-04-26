@@ -10,10 +10,10 @@ pub mod path;
 use disk_entry::DiskEntry;
 
 pub fn read_file(path: &String) -> String {
-     let mut file = File::open(path).expect("unable to open file");
-     let mut buffer = String::new();
-     file.read_to_string(&mut buffer).expect("unable to read the file");
-     serde_json::to_string(&buffer).expect("unable to JSON encode file contents").to_string()
+    let mut file = File::open(path).expect("unable to open file");
+    let mut buffer = String::new();
+    file.read_to_string(&mut buffer).expect("unable to read the file");
+    buffer
 }
 
 pub fn dir_structure(path: &String) -> Vec<DiskEntry> {

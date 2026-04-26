@@ -33,9 +33,24 @@ impl File for CobaltMarkdown {
 
 impl CobaltMarkdown {
     pub fn parse(path: &String, raw: &String) -> Self {
+        let trimmed = raw.trim_start();
+        if !trimmed.starts_with("---") {
+            return CobaltMarkdown {
+                path: Path::create(path),
+                title: None,
+                description: None,
+                layout: None,
+                tags: vec![],
+                categories: vec![],
+                published_date: None,
+                is_draft: true,
+                text: raw.clone(),
+            };
+        }
+
         let sections: Vec<&str> = raw.split("---").collect();
         let data: &str = sections.get(1).unwrap();
-        let chunks: Vec<&str> = data.split("\\n").collect();
+        let chunks: Vec<&str> = data.split('\n').collect();
         let text: String = clean_text(sections.get(2).unwrap_or(&"").to_string());
 
         let props: HashMap<String, String> =
@@ -69,17 +84,11 @@ impl CobaltMarkdown {
 }
 
 fn clean_data(str: String) -> String {
-    str.replace("\\\"", "").trim().to_string()
+    str.trim().trim_matches('"').to_string()
 }
 
 fn clean_text(text: String) -> String {
-    text
-        .replace("\\n", "\n")
-        .replace("\\t", "\t")
-        .replace("\\\"", "\"")
-        .trim_end_matches('"')
-        .trim()
-        .to_string()
+    text.trim().to_string()
 }
 
 fn parse_is_draft(prop: Option<&String>) -> bool {
@@ -96,10 +105,10 @@ fn gather_metadata_list(name: String, data: String) -> Vec<String> {
     let data_split: Vec<&str> = data.split(&identifier).collect();
     let mut rest: String = data_split.get(1).unwrap_or(&"").to_string();
 
-    while rest.starts_with("\\n  - ") {
-        rest = rest.replacen("\\n  - ", "", 1);
+    while rest.starts_with("\n  - ") {
+        rest = rest.replacen("\n  - ", "", 1);
 
-        let next_newline = rest.find("\\n").unwrap_or(0);
+        let next_newline = rest.find('\n').unwrap_or(0);
         match rest.get(0..next_newline) {
             Some(tag) => tags.push(tag.to_string()),
             None => (),

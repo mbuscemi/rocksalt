@@ -1,5 +1,6 @@
 use rocksalt_shared::file_system::disk_entry::DiskEntry;
 use rocksalt_shared::message::YewMessage;
+use web_sys::MouseEvent;
 use yew::{html, Context, Html};
 
 use crate::model::Model;
@@ -87,7 +88,6 @@ impl Model {
         }
     }
 
-    //TODO: figure out why deeply nested files aren't displaying
     pub fn render_dir(&self, ctx: &Context<Model>, top_dir: &DiskEntry, rest: &mut Vec<DiskEntry>) -> Html {
         let top_dir_clone = top_dir.clone();
 
@@ -103,7 +103,10 @@ impl Model {
         html! {
             <li
                 class={top_dir.css_class()}
-                onclick={ctx.link().callback(move |_| YewMessage::ToggleHierarchy(top_dir_clone.path.full.clone()))}
+                onclick={ctx.link().callback(move |e: MouseEvent| {
+                    e.stop_propagation();
+                    YewMessage::ToggleHierarchy(top_dir_clone.path.full.clone())
+                })}
             >
                 <span>{ top_dir.path.filename.clone() }</span>
                 <ul>
@@ -119,15 +122,23 @@ impl Model {
             let entry_clone = entry.clone();
             html! {
                 <li class={entry.css_class()}
-                    onclick={ctx.link().callback(|_| YewMessage::Noop)}
-                    ondblclick={ctx.link().callback(move |_| YewMessage::OpenFile{ path: entry_clone.path.full.clone(), file_type: entry_clone.path.file_type.clone() })}
+                    onclick={ctx.link().callback(move |e: MouseEvent| {
+                        e.stop_propagation();
+                        YewMessage::OpenFile {
+                            path: entry_clone.path.full.clone(),
+                            file_type: entry_clone.path.file_type.clone(),
+                        }
+                    })}
                 >
                     <span>{entry.path.filename.clone()}</span>
                 </li>
             }
         } else {
             html! {
-                <li class={entry.css_class()} onclick={ctx.link().callback(|_| YewMessage::Noop)}>
+                <li class={entry.css_class()} onclick={ctx.link().callback(|e: MouseEvent| {
+                    e.stop_propagation();
+                    YewMessage::Noop
+                })}>
                     <span>{entry.path.filename.clone()}</span>
                 </li>
             }
