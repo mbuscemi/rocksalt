@@ -1,11 +1,8 @@
 clean:
-	rm static/rocksalt_frontend.js
-	rm static/rocksalt_frontend.wasm
+	rm -rf frontend/pkg
 
 process:
-	cd frontend && cargo web build --release
-	cp frontend/target/wasm32-unknown-unknown/release/rocksalt_frontend.js static/
-	cp frontend/target/wasm32-unknown-unknown/release/rocksalt_frontend.wasm static/
+	cd frontend && wasm-pack build --target no-modules
 	cd shared && cargo test
 
 build:

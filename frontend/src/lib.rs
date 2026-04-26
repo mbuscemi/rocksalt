@@ -1,7 +1,3 @@
-#![recursion_limit="512"]
-#[macro_use]
-extern crate stdweb;
-
 pub mod model;
 mod view;
 mod event;
@@ -13,37 +9,36 @@ use rocksalt_shared::event::{
 };
 use rocksalt_shared::file_system::file::{ cobalt_markdown::CobaltMarkdown, plain_text::PlainText };
 use rocksalt_shared::message::{ WebviewMessage, YewMessage };
-use yew::{html, Component, ComponentLink, Html, ShouldRender};
+use wasm_bindgen::prelude::*;
+use yew::{html, Component, Context, Html};
 
 use model::Model;
+
+#[wasm_bindgen(start)]
+pub fn run_app() {
+    yew::Renderer::<Model>::new().render();
+}
 
 impl Component for Model {
     type Message = YewMessage;
     type Properties = ();
 
-    fn create(_: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let events: [Event; 3] = [
-            Event::create_for_yew::<Model, SetFile<PlainText>>(&link),
-            Event::create_for_yew::<Model, SetFile<CobaltMarkdown>>(&link),
-            Event::create_for_yew::<Model, SetProjectPath>(&link),
+    fn create(ctx: &Context<Self>) -> Self {
+        let events = vec![
+            Event::create_for_yew::<SetFile<PlainText>>(ctx.link().callback(|msg| msg)),
+            Event::create_for_yew::<SetFile<CobaltMarkdown>>(ctx.link().callback(|msg| msg)),
+            Event::create_for_yew::<SetProjectPath>(ctx.link().callback(|msg| msg)),
         ];
 
         Model {
-            link: link,
-            events: events,
+            events,
             project_path: None,
             project_structure: None,
             file: None,
         }
     }
 
-    fn destroy(&mut self) {
-        for event in self.events.iter() {
-            event.destroy_for_yew();
-        }
-    }
-
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             YewMessage::SelectFile => {
                 Event::invoke_on_webview(WebviewMessage::SelectFile);
@@ -76,20 +71,16 @@ impl Component for Model {
         }
         true
     }
-    
-    fn change(&mut self, _props: Self::Properties) -> bool {
-        false
-    }
 
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         html! {
             <div id="page">
-                { self.header() }
+                { self.header(ctx) }
                 <section id="main-editor">
                     <div id="project-panel">
-                        { self.project_contents() }
+                        { self.project_contents(ctx) }
                     </div>
-                    { self.editor() }
+                    { self.editor(ctx) }
                 </section>
                 { self.footer() }
             </div>

@@ -11,10 +11,6 @@ edition = "2018"
 [dependencies]
 rocksalt_shared = { path = "shared" }
 web-view = "0.6.2"
-serde = "1.0.106"
-serde_json = "1.0.51"
-serde_derive = "1.0.106"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
 tinyfiledialogs = "3.3.9"
-
-[dev-dependencies]
-rocksalt_frontend = { path = "frontend" }

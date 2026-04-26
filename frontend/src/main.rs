@@ -1,3 +1,3 @@
 fn main() {
-    yew::start_app::<rocksalt_frontend::model::Model>();
+    yew::Renderer::<rocksalt_frontend::model::Model>::new().render();
 }

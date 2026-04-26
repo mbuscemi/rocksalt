@@ -1,89 +1,77 @@
 use rocksalt_shared::file_system::disk_entry::DiskEntry;
 use rocksalt_shared::message::YewMessage;
-use yew::{html, Html};
+use yew::{html, Context, Html};
 
 use crate::model::Model;
 
 impl Model {
-    pub fn header(&self) -> Html {
+    pub fn header(&self, ctx: &Context<Model>) -> Html {
         match &self.project_path {
-            Some(_) => (
-                html! {
-                    <header>
-                        <div id="header-left">
-                            { self.save_button() }
-                        </div>
-                        <div id="header-right">
-                            <button id="close-button" onclick=self.link.callback(|_| YewMessage::CloseProject)>
-                                { "✖" }
-                            </button>
-                        </div>
-                    </header>
-                }
-            ),
-            None => (
-                html! {
-                    <header>
-                        <button id="open-project-folder-button" onclick=self.link.callback(|_| YewMessage::OpenProject)>
-                            { "Open Project Folder" }
+            Some(_) => html! {
+                <header>
+                    <div id="header-left">
+                        { self.save_button() }
+                    </div>
+                    <div id="header-right">
+                        <button id="close-button" onclick={ctx.link().callback(|_| YewMessage::CloseProject)}>
+                            { "✖" }
                         </button>
-                    </header>
-                }
-            ),
+                    </div>
+                </header>
+            },
+            None => html! {
+                <header>
+                    <button id="open-project-folder-button" onclick={ctx.link().callback(|_| YewMessage::OpenProject)}>
+                        { "Open Project Folder" }
+                    </button>
+                </header>
+            },
         }
     }
 
     pub fn save_button(&self) -> Html {
         match self.file {
             Some(_) => html! { <button id="save-button">{ "Save" }</button> },
-            None => html! { <button id="save-button" disabled=true>{ "Save" }</button> },
+            None => html! { <button id="save-button" disabled={true}>{ "Save" }</button> },
         }
     }
 
     pub fn footer(&self) -> Html {
         match &self.project_path {
-            Some(path) => (
-                html! {
-                    <footer>
-                        <div id="footer-left">
-                            <span id="project-path">
-                                {path}
-                            </span>
-                        </div>
-                        <div id="footer-right">
-                            <button id="save-button">{ "Build Project" }</button>
-                        </div>
-                    </footer>
-                }
-            ),
-            None => (
-                html! {
-                    <footer>
-                    </footer>
-                }
-            ),
+            Some(path) => html! {
+                <footer>
+                    <div id="footer-left">
+                        <span id="project-path">
+                            {path}
+                        </span>
+                    </div>
+                    <div id="footer-right">
+                        <button id="save-button">{ "Build Project" }</button>
+                    </div>
+                </footer>
+            },
+            None => html! {
+                <footer>
+                </footer>
+            },
         }
     }
 
-    pub fn project_contents(&self) -> Html {
+    pub fn project_contents(&self, ctx: &Context<Model>) -> Html {
         match &self.project_path {
-            Some(_) => (
-                html! {
-                    <>
-                        <h1 class="active">{ "Project" }</h1>
-                        {self.project_hierarchy()}
-                    </>
-                }
-            ),
-            None => (
-                html! {
-                    <h1 class="inactive">{ "Project" }</h1>
-                }
-            ),
+            Some(_) => html! {
+                <>
+                    <h1 class="active">{ "Project" }</h1>
+                    {self.project_hierarchy(ctx)}
+                </>
+            },
+            None => html! {
+                <h1 class="inactive">{ "Project" }</h1>
+            },
         }
     }
 
-    pub fn project_hierarchy(&self) -> Html {
+    pub fn project_hierarchy(&self, ctx: &Context<Model>) -> Html {
         match &self.project_structure {
             Some(structure) => {
                 let mut mut_structure = structure.clone();
@@ -91,7 +79,7 @@ impl Model {
 
                 html! {
                     <ul>
-                        { self.render_dir(&top_dir, &mut mut_structure) }
+                        { self.render_dir(ctx, &top_dir, &mut mut_structure) }
                     </ul>
                 }
             },
@@ -100,7 +88,7 @@ impl Model {
     }
 
     //TODO: figure out why deeply nested files aren't displaying
-    pub fn render_dir(&self, top_dir: &DiskEntry, rest: &mut Vec<DiskEntry>) -> Html {
+    pub fn render_dir(&self, ctx: &Context<Model>, top_dir: &DiskEntry, rest: &mut Vec<DiskEntry>) -> Html {
         let top_dir_clone = top_dir.clone();
 
         let (this_dir_entries, other_entries): (Vec<DiskEntry>, Vec<DiskEntry>)
@@ -115,65 +103,61 @@ impl Model {
         html! {
             <li
                 class={top_dir.css_class()}
-                onclick=self.link.callback(move |_| YewMessage::ToggleHierarchy(top_dir_clone.path.full.clone()))
+                onclick={ctx.link().callback(move |_| YewMessage::ToggleHierarchy(top_dir_clone.path.full.clone()))}
             >
                 <span>{ top_dir.path.filename.clone() }</span>
                 <ul>
-                    { these_folders.iter().map(|entry| self.render_dir(entry, &mut other_entries.clone())).collect::<Html>() }
-                    { these_files.iter().map(|entry| self.render_file(entry)).collect::<Html>() }
+                    { these_folders.iter().map(|entry| self.render_dir(ctx, entry, &mut other_entries.clone())).collect::<Html>() }
+                    { these_files.iter().map(|entry| self.render_file(ctx, entry)).collect::<Html>() }
                 </ul>
             </li>
         }
     }
 
-    pub fn render_file(&self, entry: &DiskEntry) -> Html {
+    pub fn render_file(&self, ctx: &Context<Model>, entry: &DiskEntry) -> Html {
         if entry.opennable_for_edit() {
             let entry_clone = entry.clone();
             html! {
                 <li class={entry.css_class()}
-                    onclick=self.link.callback(|_| YewMessage::Noop)
-                    ondoubleclick=self.link.callback(move |_| YewMessage::OpenFile{ path: entry_clone.path.full.clone(), file_type: entry_clone.path.file_type.clone() })
+                    onclick={ctx.link().callback(|_| YewMessage::Noop)}
+                    ondblclick={ctx.link().callback(move |_| YewMessage::OpenFile{ path: entry_clone.path.full.clone(), file_type: entry_clone.path.file_type.clone() })}
                 >
                     <span>{entry.path.filename.clone()}</span>
                 </li>
             }
         } else {
             html! {
-                <li class={entry.css_class()} onclick=self.link.callback(|_| YewMessage::Noop)>
+                <li class={entry.css_class()} onclick={ctx.link().callback(|_| YewMessage::Noop)}>
                     <span>{entry.path.filename.clone()}</span>
                 </li>
             }
         }
     }
 
-    pub fn editor(&self) -> Html {
+    pub fn editor(&self, ctx: &Context<Model>) -> Html {
         match &self.file {
-            Some(file) => {
-                html! {
-                    <div id="editor">
-                        <div id="editor-toolbar">
-                            <div class="file-tab">
-                                <div>{ file.name() }</div>
-                                <button class="close" onclick=self.link.callback(|_| YewMessage::UnsetFile)>{ "✖" }</button>
-                            </div>
-                        </div>
-                        <div id="editor-panel">
-                            <pre id="editor-pre">
-                                <code id="editor-main" class="language-md" contenteditable=true>
-                                    { file.text() }
-                                </code>
-                            </pre>
+            Some(file) => html! {
+                <div id="editor">
+                    <div id="editor-toolbar">
+                        <div class="file-tab">
+                            <div>{ file.name() }</div>
+                            <button class="close" onclick={ctx.link().callback(|_| YewMessage::UnsetFile)}>{ "✖" }</button>
                         </div>
                     </div>
-                }
+                    <div id="editor-panel">
+                        <pre id="editor-pre">
+                            <code id="editor-main" class="language-md" contenteditable="true">
+                                { file.text() }
+                            </code>
+                        </pre>
+                    </div>
+                </div>
             },
-            None => {
-                html! {
-                    <div id="editor">
-                        <div id="editor-toolbar"></div>
-                        <div id="editor-panel"></div>
-                    </div>
-                }
+            None => html! {
+                <div id="editor">
+                    <div id="editor-toolbar"></div>
+                    <div id="editor-panel"></div>
+                </div>
             },
         }
     }

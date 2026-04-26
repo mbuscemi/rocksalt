@@ -1,10 +1,8 @@
 use rocksalt_shared::file_system::{ disk_entry::DiskEntry, file::File };
 use crate::event::Event;
-use yew::ComponentLink;
 
 pub struct Model {
-    pub link: ComponentLink<Self>,
-    pub events: [Event; 3],
+    pub events: Vec<Event>,
     pub project_path: Option<String>,
     pub project_structure: Option<Vec<DiskEntry>>,
     pub file: Option<Box<dyn File>>,

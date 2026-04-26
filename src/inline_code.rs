@@ -9,95 +9,26 @@ pub fn html() -> String {
             {font_nunito}
             {font_taviraj}
             {rocksalt_style}
-            <script>
-                var Module = {{}};
-                var __cargo_web = {{}};
-                {rocksalt_wasm}
-                Object.defineProperty( Module, 'canvas', {{
-                    get: function() {{
-                        if( __cargo_web.canvas ) {{
-                            return __cargo_web.canvas;
-                        }}
-
-                        var canvas = document.createElement( 'canvas' );
-                        document.querySelector( 'body' ).appendChild( canvas );
-                        __cargo_web.canvas = canvas;
-
-                        return canvas;
-                    }}
-                }});
-            </script>
+            <script>var wasmCode = new Uint8Array({rocksalt_wasm:?});</script>
+            {rocksalt_js}
+            <script>wasm_bindgen.initSync({{ module: wasmCode }});</script>
         </head>
         <body>
-            {rocksalt_frontend}
         </body>
         </html>
-		"#,
-        rocksalt_wasm = inline_wasm(include_bytes!("../static/rocksalt_frontend.wasm").to_vec()),
-        rocksalt_frontend = inline_script(include_str!("../static/rocksalt_frontend.js").to_string()),
-        rocksalt_style = inline_style(include_str!("../static/rocksalt-style.css").to_string()),
-        font_nunito = inline_style(include_str!("../static/font-nunito.css").to_string()),
-        font_taviraj = inline_style(include_str!("../static/font-taviraj.css").to_string()),
+        "#,
+        font_nunito = inline_style(include_str!("../static/font-nunito.css")),
+        font_taviraj = inline_style(include_str!("../static/font-taviraj.css")),
+        rocksalt_style = inline_style(include_str!("../static/rocksalt-style.css")),
+        rocksalt_wasm = include_bytes!("../frontend/pkg/rocksalt_frontend_bg.wasm"),
+        rocksalt_js = inline_script(include_str!("../frontend/pkg/rocksalt_frontend.js")),
     )
 }
 
-fn inline_style(style: String) -> String {
+fn inline_style(style: &str) -> String {
     format!(r#"<style type="text/css">{}</style>"#, style)
 }
 
-fn inline_wasm(wasm_file: Vec<u8>) -> String {
-    format!(r#"var wasmCode = new Uint8Array({:?});"#, wasm_file)
+fn inline_script(script: &str) -> String {
+    format!(r#"<script type="text/javascript">{}</script>"#, script)
 }
-
-fn inline_script(script: String) -> String {
-    format!(r#"<script type="text/javascript">{}</script>"#, replace_yew_wasm_with_inline_wasm(script))
-}
-
-fn replace_yew_wasm_with_inline_wasm(file_contents: String) -> String {
-    file_contents.replace(YEW_WASM_LOADER, INLINE_WASM_LOADER)
-}
-
-const YEW_WASM_LOADER: &'static str =
-r#"if( typeof process === "object" && typeof process.versions === "object" && typeof process.versions.node === "string" ) {
-            var fs = require( "fs" );
-            var path = require( "path" );
-            var wasm_path = path.join( __dirname, "rocksalt_frontend.wasm" );
-            var buffer = fs.readFileSync( wasm_path );
-            var mod = new WebAssembly.Module( buffer );
-            var wasm_instance = new WebAssembly.Instance( mod, instance.imports );
-            return instance.initialize( wasm_instance );
-        } else {
-            var file = fetch( "rocksalt_frontend.wasm", {credentials: "same-origin"} );
-
-            var wasm_instance = ( typeof WebAssembly.instantiateStreaming === "function"
-                ? WebAssembly.instantiateStreaming( file, instance.imports )
-                    .then( function( result ) { return result.instance; } )
-
-                : file
-                    .then( function( response ) { return response.arrayBuffer(); } )
-                    .then( function( bytes ) { return WebAssembly.compile( bytes ); } )
-                    .then( function( mod ) { return WebAssembly.instantiate( mod, instance.imports ) } ) );
-
-            return wasm_instance
-                .then( function( wasm_instance ) {
-                    var exports = instance.initialize( wasm_instance );
-                    console.log( "Finished loading Rust wasm module 'rocksalt_frontend'" );
-                    return exports;
-                })
-                .catch( function( error ) {
-                    console.log( "Error loading Rust wasm module 'rocksalt_frontend':", error );
-                    throw error;
-                });
-        }"#;
-
-const INLINE_WASM_LOADER: &'static str =
-r#"var wasm_instance = WebAssembly.compile(wasmCode)
-.then( function(wasmModule) { return WebAssembly.instantiate(wasmModule, instance.imports); } );
-
-return wasm_instance
-.then( function( wasm_instance ) {
-    return instance.initialize( wasm_instance );
-})
-.catch( function( error ) {
-    throw error;
-});"#;
