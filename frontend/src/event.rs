@@ -27,7 +27,9 @@ impl Event {
 
     pub fn invoke_on_webview(message: WebviewMessage) {
         let json = serde_json::to_string(&message).unwrap();
-        let js = format!("window.external.invoke({})", json);
+        // wry IPC requires a string argument; double-serialize so the JS value is a string literal
+        let js_string = serde_json::to_string(&json).unwrap();
+        let js = format!("window.ipc.postMessage({})", js_string);
         js_sys::eval(&js).unwrap();
     }
 }

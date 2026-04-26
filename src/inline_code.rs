@@ -1,34 +1,27 @@
-pub fn html() -> String {
-    format!(
-        r#"<!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="utf-8" />
-            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-            <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=1" name="viewport" />
-            {font_nunito}
-            {font_taviraj}
-            {rocksalt_style}
-            <script>var wasmCode = new Uint8Array({rocksalt_wasm:?});</script>
-            {rocksalt_js}
-            <script>wasm_bindgen.initSync({{ module: wasmCode }});</script>
-        </head>
-        <body>
-        </body>
-        </html>
-        "#,
-        font_nunito = inline_style(include_str!("../static/font-nunito.css")),
-        font_taviraj = inline_style(include_str!("../static/font-taviraj.css")),
-        rocksalt_style = inline_style(include_str!("../static/rocksalt-style.css")),
-        rocksalt_wasm = include_bytes!("../frontend/pkg/rocksalt_frontend_bg.wasm"),
-        rocksalt_js = inline_script(include_str!("../frontend/pkg/rocksalt_frontend.js")),
-    )
-}
+use std::borrow::Cow;
 
-fn inline_style(style: &str) -> String {
-    format!(r#"<style type="text/css">{}</style>"#, style)
-}
+const HTML: &[u8] = br#"<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="font-nunito.css" />
+    <link rel="stylesheet" href="font-taviraj.css" />
+    <link rel="stylesheet" href="rocksalt-style.css" />
+    <script src="rocksalt_frontend.js"></script>
+</head>
+<body>
+    <script>wasm_bindgen('rocksalt_frontend_bg.wasm');</script>
+</body>
+</html>"#;
 
-fn inline_script(script: &str) -> String {
-    format!(r#"<script type="text/javascript">{}</script>"#, script)
+pub fn serve(path: &str) -> Option<(Cow<'static, [u8]>, &'static str)> {
+    match path {
+        "/" | "/index.html" => Some((Cow::Borrowed(HTML), "text/html")),
+        "/font-nunito.css" => Some((Cow::Borrowed(include_bytes!("../static/font-nunito.css")), "text/css")),
+        "/font-taviraj.css" => Some((Cow::Borrowed(include_bytes!("../static/font-taviraj.css")), "text/css")),
+        "/rocksalt-style.css" => Some((Cow::Borrowed(include_bytes!("../static/rocksalt-style.css")), "text/css")),
+        "/rocksalt_frontend.js" => Some((Cow::Borrowed(include_bytes!("../frontend/pkg/rocksalt_frontend.js")), "text/javascript")),
+        "/rocksalt_frontend_bg.wasm" => Some((Cow::Borrowed(include_bytes!("../frontend/pkg/rocksalt_frontend_bg.wasm")), "application/wasm")),
+        _ => None,
+    }
 }

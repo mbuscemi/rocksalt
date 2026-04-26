@@ -10,7 +10,7 @@ edition = "2018"
 
 [dependencies]
 rocksalt_shared = { path = "shared" }
-web-view = "0.6.2"
+wry = "0.24"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 tinyfiledialogs = "3.3.9"
